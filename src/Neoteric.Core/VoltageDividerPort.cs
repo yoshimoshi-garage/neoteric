@@ -1,5 +1,6 @@
 ﻿using Meadow.Hardware;
 using Meadow.Units;
+using System;
 
 namespace Neoteric
 {
@@ -15,7 +16,9 @@ namespace Neoteric
 
         public Resistance ReadR2Resistance()
         {
-            return new Resistance(Input.Voltage.Volts * R1.Ohms / (Vin.Volts - Input.Voltage.Volts));
+            var ohms = Input.Voltage.Volts * R1.Ohms / (Vin.Volts - Input.Voltage.Volts);
+            Console.WriteLine($"Resistance: {ohms:0.00}ohms");
+            return new Resistance(ohms, Resistance.UnitType.Ohms);
         }
     }
 }

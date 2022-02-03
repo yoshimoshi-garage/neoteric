@@ -11,7 +11,7 @@ namespace Neoteric
             if (args.Length > 0 && args[0] == "--exitOnDebug") return;
 
             // instantiate and run new meadow app
-            app = new SensorTestApp();
+            app = new TCFApp();
 
             Thread.Sleep(Timeout.Infinite);
         }

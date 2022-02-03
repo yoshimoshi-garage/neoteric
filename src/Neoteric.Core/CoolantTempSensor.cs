@@ -64,8 +64,8 @@ namespace Neoteric
                 switch (value)
                 {
                     case SensorCurve.GM:
-                        _factor = 945;
-                        _exponent = -0.287;
+                        _factor = 1058; // 945;
+                        _exponent = -0.318; // -0.287;
                         break;
                     case SensorCurve.Mopar:
                         _factor = 945;
