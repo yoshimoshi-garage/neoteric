@@ -2,6 +2,10 @@
 
 neoteric is both a product and a project.  The idea is to add technology to older cars, race cars, or really anything that doesn't have electronics on-board.  Stay tuned as we build up our first controller sub-system: a temperature-controlled relay
 
+## Build Tutorials
+
+The entire process of design and build of neoteric is [availble on YouTube](https://www.youtube.com/playlist?list=PLhCiXHwyBtSG45CGrDBlqeXXfJQwoWFP4).
+
 ## Microcontroller
 
 neoteric is desinged around the [Wilderness Labs Meadow](https://www.wildernesslabs.co) platform.
