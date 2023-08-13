@@ -19,7 +19,8 @@ public class GearSelectorSwitchSwitch : IDisposable
 
     private Thread _switchCheckThread;
     private IAnalogInputPort _analogInputPort;
-    private TransferCasePosition _currentPosition;
+    private TransferCasePosition? _currentPosition;
+    private double _lastReading;
 
     public bool IsDisposed { get; private set; }
 
@@ -35,21 +36,21 @@ public class GearSelectorSwitchSwitch : IDisposable
              {
                   Position = TransferCasePosition.Low4,
                   SwitchResistance = 130,
-                  MinVoltage = 0.250, // lab-measured voltage 0.63
-                  MaxVoltage = 0.750
+                  MinVoltage = 0.40, // lab-measured voltage 0.63
+                  MaxVoltage = 0.80
              },
              new SelectionBounds
              {
                   Position = TransferCasePosition.High4,
                   SwitchResistance = 270,
-                  MinVoltage = 0.750, // lab-measured voltage 0.983
-                  MaxVoltage = 1.30
+                  MinVoltage = 0.80, // lab-measured voltage 1.21
+                  MaxVoltage = 1.40
              },
              new SelectionBounds
              {
                   Position = TransferCasePosition.High2,
                   SwitchResistance = 620,
-                  MinVoltage = 1.30, // lab-measured voltage 1.76
+                  MinVoltage = 1.40, // lab-measured voltage 2.05
                   MaxVoltage = 2.25
              }
         };
@@ -60,12 +61,12 @@ public class GearSelectorSwitchSwitch : IDisposable
 
     public TransferCasePosition CurrentSwitchPosition
     {
-        get => _currentPosition;
+        get => _currentPosition ?? TransferCasePosition.Unknown;
         private set
         {
             if (value == _currentPosition) return;
 
-            Resolver.Log.Info($"Setting switch position to {value}");
+            Resolver.Log.Info($"Setting switch position to {value} ({_lastReading:0.00} volts)");
 
             _currentPosition = value;
             SwitchPositionChanged?.Invoke(this, CurrentSwitchPosition);
@@ -78,13 +79,13 @@ public class GearSelectorSwitchSwitch : IDisposable
         {
             try
             {
-                var reading = _analogInputPort.Read().Result.Volts;
+                _lastReading = _analogInputPort.Read().Result.Volts;
 
                 var detectedPosition = TransferCasePosition.Unknown;
 
                 foreach (var range in _selectionBounds)
                 {
-                    if (reading > range.MinVoltage && reading <= range.MaxVoltage)
+                    if (_lastReading > range.MinVoltage && _lastReading <= range.MaxVoltage)
                     {
                         detectedPosition = range.Position;
                         break;

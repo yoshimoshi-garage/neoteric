@@ -10,17 +10,12 @@ using System.Threading.Tasks;
 
 namespace Neoteric;
 
-// Change F7FeatherV2 to F7FeatherV1 for V1.x boards
-public class MeadowApp : App<F7FeatherV2>
+public partial class MeadowApp : App<F7FeatherV2>
 {
     private BidirectionalDcMotor _motor;
     private BorgWarner4419 _tcase;
     private GearSelectorSwitchSwitch _switch;
     private NotificationService _notificationService;
-
-    public bool SimulateMotor { get; set; } = false;
-    public bool SimulateGearSelector { get; set; } = true;
-
     private IAnalogInputPort _analog;
 
     private SimulatedIOExpander? _expander;
@@ -140,99 +135,36 @@ public class MeadowApp : App<F7FeatherV2>
         {
             case TransferCasePosition.Low4: // 4L
                 _ = _tcase.ShiftTo(TransferCasePosition.Low4);
+                _notificationService.ClearError();
                 break;
             case TransferCasePosition.High4: // 4H
                 _ = _tcase.ShiftTo(TransferCasePosition.High4);
+                _notificationService.ClearError();
                 break;
             case TransferCasePosition.High2:
                 _ = _tcase.ShiftTo(TransferCasePosition.High2);
+                _notificationService.ClearError();
                 break; // 2H
             default:
-                _notificationService.SetState(NotificationService.SystemState.Error, (int)NotificationService.ErrorCodes.SelectionSwitchNotDetected);
+                _notificationService.SetError(NotificationService.ErrorCodes.SelectionSwitchNotDetected);
                 break;
         }
     }
 
-    private async Task TestPositionSwitches()
+    private async Task ReleaseMode()
     {
         while (true)
         {
-            await Task.Delay(1000);
-        }
-    }
-
-    private async Task TestMotor()
-    {
-        while (true)
-        {
-            _motor.Clockwise();
-            Resolver.Log.Info($"CW");
-            await Task.Delay(1000);
-            _motor.Stop();
-            Resolver.Log.Info($"STOP");
-            await Task.Delay(1000);
-            _motor.CounterClockwise();
-            Resolver.Log.Info($"CCW");
-            await Task.Delay(1000);
-            _motor.Stop();
-            Resolver.Log.Info($"STOP");
-            await Task.Delay(1000);
-        }
-    }
-
-    private async Task DisconnectedGearSwitchTest()
-    {
-        while (true)
-        {
-            (_analog as SimulatedAnalogInputPort).Voltage = new Voltage(3.3, Voltage.UnitType.Volts);
-            await Task.Delay(5000);
-            (_analog as SimulatedAnalogInputPort).Voltage = new Voltage(0.5, Voltage.UnitType.Volts);
-            await Task.Delay(5000);
-        }
-    }
-
-    private async Task ShiftCycleTest2()
-    {
-        bool up = true;
-
-        while (true)
-        {
-            switch (_tcase.CurrentGear)
+            if (!_tcase.IsShifting)
             {
-                case TransferCasePosition.High2:
-                    (_analog as SimulatedAnalogInputPort).Voltage = new Voltage(0.932, Voltage.UnitType.Volts);
-                    up = false;
-                    break;
-                case TransferCasePosition.High4:
-                    (_analog as SimulatedAnalogInputPort).Voltage = new Voltage((up ? 1.75 : 0.50), Voltage.UnitType.Volts);
-                    break;
-                case TransferCasePosition.Low4:
-                    (_analog as SimulatedAnalogInputPort).Voltage = new Voltage(0.932, Voltage.UnitType.Volts);
-                    up = true;
-                    break;
+                // verify the selected gear is the gear we're in
+                if (_tcase.CurrentGear != _switch.CurrentSwitchPosition)
+                {
+                    await _tcase.ShiftTo(_switch.CurrentSwitchPosition);
+                }
             }
 
-            await Task.Delay(5000);
-        }
-    }
-
-    private async Task ShiftCycleTest()
-    {
-        while (true)
-        {
-            Resolver.Log.Info($"Current gear: {_tcase.CurrentGear}");
-
-            if (_tcase.CurrentGear == TransferCasePosition.Low4)
-            {
-                Resolver.Log.Info($"Shifting down....");
-                await _tcase.ShiftTo(TransferCasePosition.High2);
-            }
-            else if (_tcase.CurrentGear == TransferCasePosition.High2)
-            {
-                Resolver.Log.Info($"Shifting up....");
-                await _tcase.ShiftTo(TransferCasePosition.Low4);
-            }
-            await Task.Delay(500);
+            await Task.Delay(1000);
         }
     }
 
@@ -241,7 +173,7 @@ public class MeadowApp : App<F7FeatherV2>
         Resolver.Log.Info($"Current gear is {_tcase.CurrentGear}");
         Resolver.Log.Info($"Gear selector is in {_switch.CurrentSwitchPosition}");
 
-        await ShiftCycleTest2();
+        await ReleaseMode();
     }
 
 }

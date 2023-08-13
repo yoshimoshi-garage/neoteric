@@ -9,12 +9,12 @@ public class NotificationService
     private readonly RgbLed _led;
     private SystemState _state;
     private AutoResetEvent _stateEvent = new AutoResetEvent(false);
+    private ErrorCodes _currentError = ErrorCodes.None;
 
     public enum SystemState
     {
         Startup,
         Idle,
-        Error,
         DrivingMotorCW,
         DrivingMotorCCW,
         GearSelectionRequested,
@@ -34,9 +34,22 @@ public class NotificationService
         new Thread(StateMonitorProc).Start();
     }
 
+    public void ClearError()
+    {
+        _currentError = ErrorCodes.None;
+        _stateEvent.Set();
+    }
+
+    public void SetError(ErrorCodes error)
+    {
+        Resolver.Log.Info($"ERROR: {error}");
+        _currentError = error;
+        _stateEvent.Set();
+    }
+
     public void SetState(SystemState state, int? data = null)
     {
-        Resolver.Log.Info($"State: {state} {(data.HasValue ? data.Value.ToString() : string.Empty)}");
+        Resolver.Log.Info($"New State: {state} {(data.HasValue ? data.Value.ToString() : string.Empty)}");
 
         _state = state;
         _stateEvent.Set();
@@ -44,28 +57,31 @@ public class NotificationService
 
     private void StateMonitorProc(object o)
     {
-
         while (true)
         {
             if (_stateEvent.WaitOne(1000))
             {
-                switch (_state)
+                if (_currentError == ErrorCodes.None)
                 {
-                    case SystemState.Startup:
-                        _led.SetColor(RgbLedColors.Blue);
-                        break;
-                    case SystemState.DrivingMotorCW:
-                        _led.SetColor(RgbLedColors.Cyan);
-                        break;
-                    case SystemState.DrivingMotorCCW:
-                        _led.SetColor(RgbLedColors.Magenta);
-                        break;
-                    case SystemState.Error:
-                        _led.SetColor(RgbLedColors.Red);
-                        break;
-                    case SystemState.Idle:
-                        _led.SetColor(RgbLedColors.Green);
-                        break;
+                    switch (_state)
+                    {
+                        case SystemState.Startup:
+                            _led.SetColor(RgbLedColors.Blue);
+                            break;
+                        case SystemState.DrivingMotorCW:
+                            _led.SetColor(RgbLedColors.Cyan);
+                            break;
+                        case SystemState.DrivingMotorCCW:
+                            _led.SetColor(RgbLedColors.Magenta);
+                            break;
+                        case SystemState.Idle:
+                            _led.SetColor(RgbLedColors.Green);
+                            break;
+                    }
+                }
+                else
+                {
+                    _led.SetColor(RgbLedColors.Red);
                 }
             }
         }

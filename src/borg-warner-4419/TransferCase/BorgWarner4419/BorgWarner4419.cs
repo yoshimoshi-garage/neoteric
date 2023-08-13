@@ -12,7 +12,6 @@ public class BorgWarner4419
     public event EventHandler<TransferCasePosition> GearChanged = default!;
 
     private Dictionary<int, TransferCasePosition> _positionTruthTable = new();
-    private TransferCasePosition _currentGear;
     private BidirectionalDcMotor _motor;
     private IDigitalInterruptPort _positionSwitch1;
     private IDigitalInterruptPort _positionSwitch2;
@@ -39,6 +38,8 @@ public class BorgWarner4419
 
         _ = VerifyCurrentGear();
     }
+
+    public bool IsShifting => _motor.State != BidirectionalDcMotor.MotorState.Stopped;
 
     public TransferCasePosition CurrentGear
     {
