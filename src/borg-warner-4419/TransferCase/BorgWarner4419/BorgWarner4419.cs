@@ -13,17 +13,17 @@ public class BorgWarner4419
 
     private Dictionary<int, TransferCasePosition> _positionTruthTable = new();
     private BidirectionalDcMotor _motor;
-    private IDigitalInterruptPort _positionSwitch1;
-    private IDigitalInterruptPort _positionSwitch2;
-    private IDigitalInterruptPort _positionSwitch3;
-    private IDigitalInterruptPort _positionSwitch4;
+    private IDigitalInputPort _positionSwitch1;
+    private IDigitalInputPort _positionSwitch2;
+    private IDigitalInputPort _positionSwitch3;
+    private IDigitalInputPort _positionSwitch4;
 
     public BorgWarner4419(
         BidirectionalDcMotor motor,
-        IDigitalInterruptPort positionSwitch1,
-        IDigitalInterruptPort positionSwitch2,
-        IDigitalInterruptPort positionSwitch3,
-        IDigitalInterruptPort positionSwitch4)
+        IDigitalInputPort positionSwitch1,
+        IDigitalInputPort positionSwitch2,
+        IDigitalInputPort positionSwitch3,
+        IDigitalInputPort positionSwitch4)
     {
         _positionTruthTable.Add((1 << 0) | (1 << 2), TransferCasePosition.High2);     // 1 + 3
         _positionTruthTable.Add((1 << 1) | (1 << 2) | (1 << 3), TransferCasePosition.High4); // 2 + 3 + 4
@@ -90,7 +90,7 @@ public class BorgWarner4419
 
         var current = CurrentGear;
 
-        _motor.CounterClockwise();
+        _motor.StartCounterClockwise();
         while (CurrentGear == current || CurrentGear == TransferCasePosition.Unknown)
         {
             await Task.Delay(10);
@@ -109,7 +109,7 @@ public class BorgWarner4419
 
         var current = CurrentGear;
 
-        _motor.Clockwise();
+        _motor.StartClockwise();
         while (CurrentGear == current || CurrentGear == TransferCasePosition.Unknown)
         {
             await Task.Delay(10);

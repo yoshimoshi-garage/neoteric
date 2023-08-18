@@ -36,22 +36,22 @@ public class GearSelectorSwitchSwitch : IDisposable
              {
                   Position = TransferCasePosition.Low4,
                   SwitchResistance = 130,
-                  MinVoltage = 0.40, // lab-measured voltage 0.63
+                  MinVoltage = 0.40, // lab-measured voltage 0.57
                   MaxVoltage = 0.80
              },
              new SelectionBounds
              {
                   Position = TransferCasePosition.High4,
                   SwitchResistance = 270,
-                  MinVoltage = 0.80, // lab-measured voltage 1.21
-                  MaxVoltage = 1.40
+                  MinVoltage = 0.80, // lab-measured voltage 0.98
+                  MaxVoltage = 1.20
              },
              new SelectionBounds
              {
                   Position = TransferCasePosition.High2,
                   SwitchResistance = 620,
-                  MinVoltage = 1.40, // lab-measured voltage 2.05
-                  MaxVoltage = 2.25
+                  MinVoltage = 1.20, // lab-measured voltage 1.53
+                  MaxVoltage = 1.80
              }
         };
 
@@ -94,7 +94,15 @@ public class GearSelectorSwitchSwitch : IDisposable
 
                 CurrentSwitchPosition = detectedPosition;
 
-                Thread.Sleep(500);
+                if (detectedPosition == TransferCasePosition.Unknown)
+                {
+                    Resolver.Log.Info($"ADC: {_lastReading} volts");
+                    Thread.Sleep(2000);
+                }
+                else
+                {
+                    Thread.Sleep(500);
+                }
             }
             catch (Exception ex)
             {

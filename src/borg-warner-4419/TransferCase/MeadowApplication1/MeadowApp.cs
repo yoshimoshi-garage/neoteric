@@ -5,18 +5,21 @@ using Meadow.Foundation.Motors;
 using Meadow.Hardware;
 using Meadow.Simulation;
 using Meadow.Units;
-using System;
 using System.Threading.Tasks;
 
 namespace Neoteric;
 
-public partial class MeadowApp : App<F7FeatherV2>
+public partial class MeadowApp : App<F7FeatherV1>
 {
     private BidirectionalDcMotor _motor;
     private BorgWarner4419 _tcase;
     private GearSelectorSwitchSwitch _switch;
     private NotificationService _notificationService;
     private IAnalogInputPort _analog;
+    private IDigitalInputPort _sw1;
+    private IDigitalInputPort _sw2;
+    private IDigitalInputPort _sw3;
+    private IDigitalInputPort _sw4;
 
     private SimulatedIOExpander? _expander;
 
@@ -43,12 +46,14 @@ public partial class MeadowApp : App<F7FeatherV2>
         Resolver.Log.Info($" Analog");
         if (SimulateGearSelector)
         {
+            Resolver.Log.Info($"USING SIMULATED ANALOG");
             _expander = new SimulatedIOExpander(1);
             _analog = _expander.GetPin(0).CreateAnalogInputPort(1);
             (_analog as SimulatedAnalogInputPort).Voltage = new Voltage(1.75, Voltage.UnitType.Volts);
         }
         else
         {
+            Resolver.Log.Info($"Using A00 for switch");
             _analog = Device.Pins.A00.CreateAnalogInputPort(1);
         }
 
@@ -64,8 +69,8 @@ public partial class MeadowApp : App<F7FeatherV2>
         }
         else
         {
-            motorA = Device.Pins.D00.CreateDigitalOutputPort(false);
-            motorB = Device.Pins.D01.CreateDigitalOutputPort(false);
+            motorA = Device.Pins.D01.CreateDigitalOutputPort(false);
+            motorB = Device.Pins.D00.CreateDigitalOutputPort(false);
         }
 
         Resolver.Log.Info($" Motor");
@@ -73,32 +78,16 @@ public partial class MeadowApp : App<F7FeatherV2>
         _motor.StateChanged += OnMotorStateChanged;
 
         Resolver.Log.Info($" Transfer case");
+        _sw1 = Device.Pins.D13.CreateDigitalInputPort();
+        _sw2 = Device.Pins.D12.CreateDigitalInputPort();
+        _sw3 = Device.Pins.D11.CreateDigitalInputPort();
+        _sw4 = Device.Pins.D10.CreateDigitalInputPort();
+
         _tcase = new BorgWarner4419(
             _motor,
-            Device.Pins.D11.CreateDigitalInterruptPort(
-                InterruptMode.EdgeRising,
-                ResistorMode.InternalPullDown,
-                TimeSpan.FromMilliseconds(100),
-                TimeSpan.FromMilliseconds(1)),
-            Device.Pins.D12.CreateDigitalInterruptPort(
-                InterruptMode.EdgeRising,
-                ResistorMode.InternalPullDown,
-                TimeSpan.FromMilliseconds(100),
-                TimeSpan.FromMilliseconds(1)),
-            Device.Pins.D13.CreateDigitalInterruptPort(
-                InterruptMode.EdgeRising,
-                ResistorMode.InternalPullDown,
-                TimeSpan.FromMilliseconds(100),
-                TimeSpan.FromMilliseconds(1)),
-            Device.Pins.D10.CreateDigitalInterruptPort(
-                InterruptMode.EdgeRising,
-                ResistorMode.InternalPullDown,
-                TimeSpan.FromMilliseconds(100),
-                TimeSpan.FromMilliseconds(1)));
+            _sw1, _sw2, _sw3, _sw4);
 
         _tcase.GearChanged += OnTransferCaseGearChanged;
-
-        // TODO: make sure transfer case is in gear matching switch
 
         return base.Initialize();
     }

@@ -14,6 +14,7 @@ public partial class MeadowApp
     {
         while (true)
         {
+            Resolver.Log.Info($"Current gear: {_tcase.CurrentGear} {(_sw1.State ? 1 : 0)}{(_sw2.State ? 1 : 0)}{(_sw3.State ? 1 : 0)}{(_sw4.State ? 1 : 0)}");
             await Task.Delay(1000);
         }
     }
@@ -22,13 +23,13 @@ public partial class MeadowApp
     {
         while (true)
         {
-            _motor.Clockwise();
+            _motor.StartClockwise();
             Resolver.Log.Info($"CW");
             await Task.Delay(1000);
             _motor.Stop();
             Resolver.Log.Info($"STOP");
             await Task.Delay(1000);
-            _motor.CounterClockwise();
+            _motor.StartCounterClockwise();
             Resolver.Log.Info($"CCW");
             await Task.Delay(1000);
             _motor.Stop();
