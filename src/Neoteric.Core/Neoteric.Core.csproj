@@ -3,11 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <RootNamespace>Neoteric</RootNamespace>
+    <LangVersion>10</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="C:\Repos\WildernessLabs\Meadow.Contracts\Source\Meadow.Contracts\Meadow.Contracts.csproj" />
-    <ProjectReference Include="C:\Repos\WildernessLabs\Meadow.Units\Source\Meadow.Units\Meadow.Units.csproj" />
+    <PackageReference Include="Meadow" Version="*" />
   </ItemGroup>
 
 </Project>

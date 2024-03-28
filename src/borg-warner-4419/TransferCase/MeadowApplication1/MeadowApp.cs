@@ -78,10 +78,10 @@ public partial class MeadowApp : App<F7FeatherV1>
         _motor.StateChanged += OnMotorStateChanged;
 
         Resolver.Log.Info($" Transfer case");
-        _sw1 = Device.Pins.D13.CreateDigitalInputPort();
-        _sw2 = Device.Pins.D12.CreateDigitalInputPort();
-        _sw3 = Device.Pins.D11.CreateDigitalInputPort();
-        _sw4 = Device.Pins.D10.CreateDigitalInputPort();
+        _sw1 = Device.Pins.D13.CreateDigitalInputPort(ResistorMode.InternalPullDown);
+        _sw2 = Device.Pins.D12.CreateDigitalInputPort(ResistorMode.InternalPullDown);
+        _sw3 = Device.Pins.D11.CreateDigitalInputPort(ResistorMode.InternalPullDown);
+        _sw4 = Device.Pins.D10.CreateDigitalInputPort(ResistorMode.InternalPullDown);
 
         _tcase = new BorgWarner4419(
             _motor,
