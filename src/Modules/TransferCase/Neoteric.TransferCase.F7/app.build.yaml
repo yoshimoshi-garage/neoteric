@@ -1,0 +1,3 @@
+# prevent trimming of Core assembly so properties set by deserializer don't get removed'
+Deploy:
+  NoLink: [ Neoteric.TransferCase.Core, Neoteric.Core ]

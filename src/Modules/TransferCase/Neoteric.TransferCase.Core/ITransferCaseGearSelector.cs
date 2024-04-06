@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Neoteric.TransferCase.Core;
+namespace Neoteric.TransferCase;
 
 public interface ITransferCaseGearSelector : IEnumerable<TransferCaseSwitchSelectionBounds>
 {

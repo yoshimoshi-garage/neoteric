@@ -1,0 +1,10 @@
+# Uncomment additional options as needed.
+# To learn more about these config options, including custom application configuration settings, check out the Application Settings Configuration documentation.
+# http://developer.wildernesslabs.co/Meadow/Meadow.OS/Configuration/Application_Settings_Configuration/
+
+Lifecycle:
+    RestartOnAppFailure: true
+
+Logging:
+    LogLevel:
+        Default: Trace

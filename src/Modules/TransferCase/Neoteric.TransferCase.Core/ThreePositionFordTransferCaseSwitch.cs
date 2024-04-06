@@ -1,7 +1,7 @@
 ﻿using Meadow.Hardware;
 using Meadow.Units;
 
-namespace Neoteric.TransferCase.Core;
+namespace Neoteric.TransferCase;
 
 public class ThreePositionFordTransferCaseSwitch : AnalogTransferCaseGearSelectorSwitch
 {

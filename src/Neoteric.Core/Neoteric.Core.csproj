@@ -4,10 +4,11 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <RootNamespace>Neoteric</RootNamespace>
     <LangVersion>10</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Meadow" Version="*" />
+    <ProjectReference Include="..\..\..\..\wilderness\Meadow.Core\source\Meadow.Core\Meadow.Core.csproj" />
   </ItemGroup>
 
 </Project>

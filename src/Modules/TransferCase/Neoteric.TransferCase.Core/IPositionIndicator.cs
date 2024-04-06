@@ -1,4 +1,4 @@
-﻿namespace Neoteric.TransferCase.Core;
+﻿namespace Neoteric.TransferCase;
 
 public interface IPositionIndicator
 {

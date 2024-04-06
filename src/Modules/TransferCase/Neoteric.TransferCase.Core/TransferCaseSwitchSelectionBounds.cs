@@ -1,6 +1,6 @@
 ﻿using Meadow.Units;
 
-namespace Neoteric.TransferCase.Core;
+namespace Neoteric.TransferCase;
 
 public struct TransferCaseSwitchSelectionBounds
 {
