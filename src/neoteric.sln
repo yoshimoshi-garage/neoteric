@@ -8,6 +8,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{25B0069D-23F2-4510-A0C5-D1AE5D42C71A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TransferCase", "TransferCase", "{CCE51A0A-7AE2-4EE2-8C6C-292F8C84270B}"
+	ProjectSection(SolutionItems) = preProject
+		Modules\TransferCase\readme.md = Modules\TransferCase\readme.md
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neoteric.TransferCase.Core", "Modules\TransferCase\Neoteric.TransferCase.Core\Neoteric.TransferCase.Core.csproj", "{641173D9-2472-4491-9822-E5CA95388542}"
 EndProject
@@ -30,6 +33,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Units", "..\..\..\wilderness\Meadow.Units\Source\Meadow.Units\Meadow.Units.csproj", "{E8CD051D-4612-431B-9999-E00063F080DE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.F7", "..\..\..\wilderness\Meadow.Core\source\implementations\f7\Meadow.F7\Meadow.F7.csproj", "{70930B02-0A8A-43B3-B3C2-5C4BCADD282D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Graphics.MicroGraphics", "..\..\..\wilderness\Meadow.Foundation\Source\Meadow.Foundation.Libraries_and_Frameworks\Graphics.MicroGraphics\Driver\Graphics.MicroGraphics.csproj", "{21B69360-072D-4FAB-BC49-CC2B333DF2D3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Graphics.MicroLayout", "..\..\..\wilderness\Meadow.Foundation\Source\Meadow.Foundation.Libraries_and_Frameworks\Graphics.MicroLayout\Driver\Graphics.MicroLayout.csproj", "{8356BC72-F195-4ECF-99D6-305677B99E92}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Displays.Ssd130x", "..\..\..\wilderness\Meadow.Foundation\Source\Meadow.Foundation.Peripherals\Displays.Ssd130x\Driver\Displays.Ssd130x.csproj", "{C05CA773-B8D3-4BBA-941E-7E7437EDAB53}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -104,6 +113,24 @@ Global
 		{70930B02-0A8A-43B3-B3C2-5C4BCADD282D}.ProjectRefs|Any CPU.Build.0 = Debug|Any CPU
 		{70930B02-0A8A-43B3-B3C2-5C4BCADD282D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70930B02-0A8A-43B3-B3C2-5C4BCADD282D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21B69360-072D-4FAB-BC49-CC2B333DF2D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21B69360-072D-4FAB-BC49-CC2B333DF2D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21B69360-072D-4FAB-BC49-CC2B333DF2D3}.ProjectRefs|Any CPU.ActiveCfg = Debug|Any CPU
+		{21B69360-072D-4FAB-BC49-CC2B333DF2D3}.ProjectRefs|Any CPU.Build.0 = Debug|Any CPU
+		{21B69360-072D-4FAB-BC49-CC2B333DF2D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21B69360-072D-4FAB-BC49-CC2B333DF2D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8356BC72-F195-4ECF-99D6-305677B99E92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8356BC72-F195-4ECF-99D6-305677B99E92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8356BC72-F195-4ECF-99D6-305677B99E92}.ProjectRefs|Any CPU.ActiveCfg = Debug|Any CPU
+		{8356BC72-F195-4ECF-99D6-305677B99E92}.ProjectRefs|Any CPU.Build.0 = Debug|Any CPU
+		{8356BC72-F195-4ECF-99D6-305677B99E92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8356BC72-F195-4ECF-99D6-305677B99E92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C05CA773-B8D3-4BBA-941E-7E7437EDAB53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C05CA773-B8D3-4BBA-941E-7E7437EDAB53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C05CA773-B8D3-4BBA-941E-7E7437EDAB53}.ProjectRefs|Any CPU.ActiveCfg = Debug|Any CPU
+		{C05CA773-B8D3-4BBA-941E-7E7437EDAB53}.ProjectRefs|Any CPU.Build.0 = Debug|Any CPU
+		{C05CA773-B8D3-4BBA-941E-7E7437EDAB53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C05CA773-B8D3-4BBA-941E-7E7437EDAB53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -120,6 +147,9 @@ Global
 		{0C8C8550-7D23-4927-A5C5-7F8D53744BF1} = {AF010956-C2BC-47F6-A532-604F02AB5031}
 		{E8CD051D-4612-431B-9999-E00063F080DE} = {AF010956-C2BC-47F6-A532-604F02AB5031}
 		{70930B02-0A8A-43B3-B3C2-5C4BCADD282D} = {AF010956-C2BC-47F6-A532-604F02AB5031}
+		{21B69360-072D-4FAB-BC49-CC2B333DF2D3} = {AF010956-C2BC-47F6-A532-604F02AB5031}
+		{8356BC72-F195-4ECF-99D6-305677B99E92} = {AF010956-C2BC-47F6-A532-604F02AB5031}
+		{C05CA773-B8D3-4BBA-941E-7E7437EDAB53} = {AF010956-C2BC-47F6-A532-604F02AB5031}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D4064015-9CB8-48EC-8BC4-81DE03C9FCC5}
