@@ -77,7 +77,7 @@ public abstract class AnalogTransferCaseGearSelectorSwitch : ITransferCaseGearSe
 
             if (detectedPosition == TransferCasePosition.Unknown)
             {
-                Resolver.Log.Info($"ADC: {_lastReading} volts");
+                //Resolver.Log.Info($"ADC: {_lastReading} volts");
                 _switchPollTimer.Change(TimeSpan.FromSeconds(2), TimeSpan.FromMilliseconds(-1));
             }
             else

@@ -18,3 +18,6 @@ Below is a running list of tasks/features that I hope to include in a next versi
 - Add silkscreen for t-case selection jumper
 - Add a jumper to pull the ENA safety interlock low
 - Add a jumper or expander to allow software read of hardware revision 
+- Add CAN bus support
+- Add jumper-optional sleep/wake on switched ACC power
+- Add interlock disable (ground) jumper

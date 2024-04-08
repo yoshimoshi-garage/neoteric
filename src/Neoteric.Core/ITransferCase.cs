@@ -3,6 +3,11 @@ using System.Threading.Tasks;
 
 namespace Neoteric;
 
+public interface ITransferCaseController
+{
+    Task ExecuteControl();
+}
+
 public interface ITransferCase
 {
     event EventHandler<TransferCasePosition>? GearChanged;

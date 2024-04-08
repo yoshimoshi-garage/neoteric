@@ -76,7 +76,6 @@ public abstract class TransferCaseBase : ITransferCase
         _motor.StopShift();
     }
 
-
     public async Task ShiftTo(TransferCasePosition position)
     {
         Resolver.Log.Info($"Request shift to {position}");

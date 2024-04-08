@@ -1,74 +1,17 @@
 ﻿using Meadow;
 using Meadow.Devices;
 using Meadow.Foundation.Displays;
-using Meadow.Foundation.Graphics;
-using Meadow.Foundation.Graphics.MicroLayout;
 using Meadow.Hardware;
-using Meadow.Peripherals.Displays;
 using System;
+using System.Threading.Tasks;
 using static Meadow.Foundation.Motors.BidirectionalDcMotor;
 
 namespace Neoteric.TransferCase.F7;
 
-internal class DisplayService
-{
-    private IPixelDisplay _display;
-    private DisplayScreen _screen;
-
-    private Label[] _labels;
-    private int _currentRow = 0;
-    private int _rows = 4;
-
-    public DisplayService(IPixelDisplay display)
-    {
-        _display = display;
-        _screen = new DisplayScreen(display);
-
-        var font = new Font8x12();
-        var y = 0;
-
-        var rowHeight = 20;
-
-        _labels = new Label[_rows];
-        for (var r = 0; r < _rows; r++)
-        {
-            _labels[r] = new Label(y, 0, _screen.Width, rowHeight)
-            {
-                Font = font
-            };
-            y += rowHeight;
-        }
-    }
-
-    public void Clear()
-    {
-        for (var r = 0; r < _rows; r++)
-        {
-            _labels[r].Text = string.Empty;
-            _currentRow = 0;
-        }
-    }
-
-    public void Report(string message)
-    {
-        while (_currentRow >= _rows)
-        {
-            for (var r = 0; r < _rows - 2; r++)
-            {
-                _labels[r].Text = _labels[r + 1].Text;
-            }
-            _currentRow--;
-        }
-
-        _labels[_currentRow].Text = message;
-        _currentRow++;
-    }
-}
-
 /// <summary>
 /// Controller for either the BW4419 or MP3023NQH Transfer cases using the Ford 3-position selector switch
 /// </summary>
-public class NTCCv1b
+public class NTCCv1b : ITransferCaseController
 {
     /*
     F7Featherv2 pin map for the NTCv1b
@@ -95,13 +38,14 @@ public class NTCCv1b
     private readonly ITransferCaseGearSelector _gearSelector;
     private readonly DisplayService? _displayService;
 
-    public NTCCv1b(F7FeatherV2 device)
+    public NTCCv1b(F7FeatherV2 device, bool interlockEnable = true)
     {
         // do we have a display attached?
         var i2c = device.CreateI2cBus(I2cBusSpeed.High);
         try
         {
             var display = new Ssd1306(i2c);
+
             _displayService = new DisplayService(display);
         }
         catch (Exception ex)
@@ -119,7 +63,21 @@ public class NTCCv1b
         var motor = new GearSelectionMotor(device.Pins.D01, device.Pins.D00);
         motor.StateChanged += OnMotorStateChanged;
 
-        var interlock = new SafetyInterlockSwitch(device.Pins.D05);
+        ISafetyInterlock? interlock = null;
+
+        if (interlockEnable)
+        {
+            interlock = new SafetyInterlockSwitch(device.Pins.D05);
+            _displayService?.Report($"ENA: {(interlock.IsSafe ? "safe" : "not safe")}");
+            interlock.Changed += (s, e) =>
+            {
+                _displayService?.Report($"ENA: {(interlock.IsSafe ? "safe" : "not safe")}");
+            };
+        }
+        else
+        {
+            _displayService?.Report($"ENA: disabled");
+        }
 
         if (selectionPort.State)
         {
@@ -145,9 +103,38 @@ public class NTCCv1b
         }
 
         _gearSelector = new ThreePositionFordTransferCaseSwitch(device.Pins.A00.CreateAnalogInputPort());
+        _gearSelector.RequestedPositionChanged += OnGearSelectorRequestedPositionChanged;
+
+        Resolver.Log.Info($"Transfer case in: {_gearSelector.CurrentSwitchPosition}");
+        Resolver.Log.Info($"Selected gear: {_gearSelector.CurrentSwitchPosition}");
+        _displayService?.Report($"SW: {_gearSelector.CurrentSwitchPosition}");
+        _displayService?.Report($"TC: {_transferCase.CurrentGear}");
+    }
+
+    private void OnGearSelectorRequestedPositionChanged(object sender, TransferCasePosition e)
+    {
+        Resolver.Log.Info($"Selected gear: {e}");
+        _displayService?.Report($"SW: {e}");
     }
 
     private void OnMotorStateChanged(object sender, MotorState e)
     {
+        Resolver.Log.Info($"Motor {e}");
+        _displayService?.Report(e.ToString());
+    }
+
+    public async Task ExecuteControl()
+    {
+        while (true)
+        {
+            if (!_transferCase.IsShifting)
+            {
+                // verify the selected gear is the gear we're in
+                if (_transferCase.CurrentGear != _gearSelector.CurrentSwitchPosition)
+                {
+                    await _transferCase.ShiftTo(_gearSelector.CurrentSwitchPosition);
+                }
+            }
+        }
     }
 }
