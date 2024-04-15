@@ -3,7 +3,6 @@ using Meadow.Devices;
 using Meadow.Foundation.Displays;
 using Meadow.Hardware;
 using System;
-using System.Threading.Tasks;
 using static Meadow.Foundation.Motors.BidirectionalDcMotor;
 
 namespace Neoteric.TransferCase.F7;
@@ -54,7 +53,6 @@ public class NTCCv1b : ITransferCaseController
             Resolver.Log.Info("No Debug Display found");
         }
 
-
         // what transfer case are we selecting (J1)
 
         using var selectionPort = device.Pins.D06.CreateDigitalInputPort(Meadow.Hardware.ResistorMode.Disabled);
@@ -99,42 +97,52 @@ public class NTCCv1b : ITransferCaseController
             Resolver.Log.Info("SELECTION JUMPER IS LOW - MP3023NQH");
             _displayService?.Report("MP3023NQH");
 
-            _transferCase = new MP3023NQH(motor, device.Pins.A01.CreateAnalogInputPort(), interlock);
+            _transferCase = new MP3023NQH(motor, device.Pins.A01.CreateAnalogInputPort(3), interlock);
         }
+
+        _transferCase.GearChanged += OnTransferCaseGearChanged;
+        _transferCase.GearChanging += OnTransferCaseGearChanging;
 
         _gearSelector = new ThreePositionFordTransferCaseSwitch(device.Pins.A00.CreateAnalogInputPort());
         _gearSelector.RequestedPositionChanged += OnGearSelectorRequestedPositionChanged;
 
-        Resolver.Log.Info($"Transfer case in: {_gearSelector.CurrentSwitchPosition}");
+        _ = _transferCase.ShiftTo(_gearSelector.RequestedPosition);
+        _transferCase.StartControlLoop();
+
         Resolver.Log.Info($"Selected gear: {_gearSelector.CurrentSwitchPosition}");
+        Resolver.Log.Info($"Transfer case in: {_transferCase.CurrentGear}");
         _displayService?.Report($"SW: {_gearSelector.CurrentSwitchPosition}");
         _displayService?.Report($"TC: {_transferCase.CurrentGear}");
+    }
+
+    private void OnTransferCaseGearChanging(object sender, TransferCasePosition e)
+    {
+        Resolver.Log.Info($"Transfer case shifting to: {e}");
+        _displayService?.Report($"--> {e}");
+    }
+
+    private void OnTransferCaseGearChanged(object sender, TransferCasePosition e)
+    {
+        Resolver.Log.Info($"Transfer case in: {e}");
+        _displayService?.Report($"TC: {e}");
     }
 
     private void OnGearSelectorRequestedPositionChanged(object sender, TransferCasePosition e)
     {
         Resolver.Log.Info($"Selected gear: {e}");
+        _ = _transferCase.ShiftTo(e);
         _displayService?.Report($"SW: {e}");
     }
 
     private void OnMotorStateChanged(object sender, MotorState e)
     {
         Resolver.Log.Info($"Motor {e}");
-        _displayService?.Report(e.ToString());
-    }
-
-    public async Task ExecuteControl()
-    {
-        while (true)
+        var state = e switch
         {
-            if (!_transferCase.IsShifting)
-            {
-                // verify the selected gear is the gear we're in
-                if (_transferCase.CurrentGear != _gearSelector.CurrentSwitchPosition)
-                {
-                    await _transferCase.ShiftTo(_gearSelector.CurrentSwitchPosition);
-                }
-            }
-        }
+            MotorState.RunningClockwise => "MO: CW",
+            MotorState.RunningCounterclockwise => "MO: CCW",
+            _ => "MO: STOP"
+        };
+        _displayService?.Report(state);
     }
 }

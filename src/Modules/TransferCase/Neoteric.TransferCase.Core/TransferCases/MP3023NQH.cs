@@ -18,9 +18,14 @@ public class MP3023NQH : TransferCaseBase
         : base(motor, safetyInterlock)
     {
         _positionSensor = positionSensorPort;
-
-        _ = VerifyCurrentGear();
     }
+
+    public override TransferCasePosition[] SupportedGears => new TransferCasePosition[]
+        {
+            TransferCasePosition.Low4,
+            TransferCasePosition.High2,
+            TransferCasePosition.High4
+        };
 
     // The MP3023NQH gear position sensor requires a 5V signal.  It returns the following voltages based on gear selection:
     // 4LOW: 1.3V
@@ -36,17 +41,19 @@ public class MP3023NQH : TransferCaseBase
     {
         get
         {
+            if (_positionSensor == null) return TransferCasePosition.Unknown;
+
             var sensorReading = _positionSensor.Read().Result.Volts;
 
-            if (sensorReading > 0.90 && sensorReading < 1.05)
+            if (sensorReading > 0.90 && sensorReading < 1.05)       // 0-5V input ~1.3
             {
                 return TransferCasePosition.Low4;
             }
-            else if (sensorReading > 1.3 && sensorReading < 1.5)
+            else if (sensorReading > 1.3 && sensorReading < 1.5)    // 0-5V input ~2.0
             {
                 return TransferCasePosition.High2;
             }
-            else if (sensorReading > 1.95 && sensorReading < 2.15)
+            else if (sensorReading > 1.95 && sensorReading < 2.15)  // 0-5V input ~3.0
             {
                 return TransferCasePosition.High4;
             }

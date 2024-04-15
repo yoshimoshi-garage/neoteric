@@ -32,9 +32,15 @@ public class BW4419 : TransferCaseBase
         _positionSwitch2 = positionSwitch2;
         _positionSwitch3 = positionSwitch3;
         _positionSwitch4 = positionSwitch4;
-
-        _ = VerifyCurrentGear();
     }
+
+    public override TransferCasePosition[] SupportedGears => new TransferCasePosition[]
+        {
+            TransferCasePosition.High2,
+            TransferCasePosition.High4,
+            TransferCasePosition.Neutral,
+            TransferCasePosition.Low4,
+        };
 
     public override TransferCasePosition CurrentGear
     {

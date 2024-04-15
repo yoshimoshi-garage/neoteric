@@ -1,7 +1,6 @@
 ﻿using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Graphics.MicroLayout;
 using Meadow.Peripherals.Displays;
-using System;
 
 namespace Neoteric.TransferCase.F7;
 
@@ -55,7 +54,6 @@ internal class DisplayService
         {
             for (var r = 0; r < _rows - 1; r++)
             {
-                Console.WriteLine($"_currentRow: {_currentRow} LINE{r}={_labels[r + 1].Text}");
                 _labels[r].Text = _labels[r + 1].Text;
             }
             _currentRow--;

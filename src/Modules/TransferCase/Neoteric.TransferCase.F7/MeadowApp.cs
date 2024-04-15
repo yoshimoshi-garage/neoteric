@@ -17,7 +17,7 @@ public class MeadowApp : App<F7FeatherV2>
 
     public override Task Run()
     {
-        return _controller.ExecuteControl();
+        return base.Run();
     }
 
 }
