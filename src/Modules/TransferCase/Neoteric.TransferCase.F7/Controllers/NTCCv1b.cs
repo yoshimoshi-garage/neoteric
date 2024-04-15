@@ -106,7 +106,7 @@ public class NTCCv1b : ITransferCaseController
         _gearSelector = new ThreePositionFordTransferCaseSwitch(device.Pins.A00.CreateAnalogInputPort());
         _gearSelector.RequestedPositionChanged += OnGearSelectorRequestedPositionChanged;
 
-        _ = _transferCase.ShiftTo(_gearSelector.RequestedPosition);
+        _transferCase.RequestShiftTo(_gearSelector.RequestedPosition);
         _transferCase.StartControlLoop();
 
         Resolver.Log.Info($"Selected gear: {_gearSelector.CurrentSwitchPosition}");
@@ -130,7 +130,7 @@ public class NTCCv1b : ITransferCaseController
     private void OnGearSelectorRequestedPositionChanged(object sender, TransferCasePosition e)
     {
         Resolver.Log.Info($"Selected gear: {e}");
-        _ = _transferCase.ShiftTo(e);
+        _transferCase.RequestShiftTo(e);
         _displayService?.Report($"SW: {e}");
     }
 

@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Threading.Tasks;
 
 namespace Neoteric;
-
-public interface ITransferCaseController
-{
-}
 
 public interface ITransferCase
 {
@@ -15,5 +10,5 @@ public interface ITransferCase
     void StartControlLoop();
     TransferCasePosition CurrentGear { get; }
     bool IsShifting { get; }
-    Task ShiftTo(TransferCasePosition position);
+    void RequestShiftTo(TransferCasePosition position);
 }

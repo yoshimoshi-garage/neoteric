@@ -68,10 +68,6 @@ public abstract class TransferCaseBase : ITransferCase
 
     private async Task StateMachine()
     {
-        ulong tick = 0;
-
-        Resolver.Log.Info(">> + STATE MACHINE");
-
         while (true)
         {
             try
@@ -91,8 +87,6 @@ public abstract class TransferCaseBase : ITransferCase
                     }
                     else if (_destinationGearIndex < currentIndex)
                     {
-                        Resolver.Log.Info($"DOWN: {currentIndex}->{_destinationGearIndex}");
-
                         _motor.BeginShiftDown();
                         State = TransferCaseState.ShiftingDown;
                     }
@@ -113,17 +107,11 @@ public abstract class TransferCaseBase : ITransferCase
                 Resolver.Log.Warn(ex.Message);
             }
 
-            if (tick++ % 10 == 0)
-            {
-                Resolver.Log.Info($"{CurrentGearIndex}->{_destinationGearIndex}");
-            }
-
             await Task.Delay(100);
         }
-        Resolver.Log.Info(">> - STATE MACHINE");
     }
 
-    public async Task ShiftTo(TransferCasePosition position)
+    public void RequestShiftTo(TransferCasePosition position)
     {
         if (_safetyInterlock != null && !_safetyInterlock.IsSafe)
         {
@@ -143,36 +131,5 @@ public abstract class TransferCaseBase : ITransferCase
         }
 
         _destinationGearIndex = destinationIndex;
-        Resolver.Log.Warn($"_destinationGearIndex: {_destinationGearIndex}");
-
-        /*
-        // are already mid-shift?
-        if (!_motor.IsMoving)
-        {
-            // verify current gear
-            await VerifyCurrentGear();
-
-            if (destinationIndex == CurrentGearIndex) return;
-
-            Resolver.Log.Info($"Request shift from {CurrentGear} to {SupportedGears[destinationIndex]} ({destinationIndex} -> {CurrentGearIndex})");
-
-            while (CurrentGearIndex != _destinationGearIndex)
-            {
-                // if the desired gear is above us, move up
-                if (_destinationGearIndex > CurrentGearIndex)
-                {
-                    await ShiftUp();
-                }
-                // else if desired gear is below us shift down
-                else if (_destinationGearIndex < CurrentGearIndex)
-                {
-                    await ShiftDown();
-                }
-            }
-
-            Resolver.Log.Info($"Completed shift to {CurrentGear}");
-            GearChanged?.Invoke(this, CurrentGear);
-        }
-        */
     }
 }
