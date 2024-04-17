@@ -21,3 +21,5 @@ Below is a running list of tasks/features that I hope to include in a next versi
 - Add CAN bus support
 - Add jumper-optional sleep/wake on switched ACC power
 - Add interlock disable (ground) jumper
+- Add schottky diode to 12Vin and 5V out for reverse-polarity protection
+- Add TVS diodes for transient protection

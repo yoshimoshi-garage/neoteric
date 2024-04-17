@@ -10,7 +10,7 @@ public class MeadowApp : App<F7FeatherV2>
 
     public override Task Initialize()
     {
-        _controller = NTCCHardware.Create(false);
+        _controller = NTCCHardware.Create(true);
 
         return base.Initialize();
     }

@@ -28,25 +28,27 @@ public abstract class TransferCaseBase : ITransferCase
     protected GearSelectionMotor SelectionMotor => _motor;
     protected ISafetyInterlock? SafetyInterlock => _safetyInterlock;
 
+    /// <summary>
+    /// Override this method to provide data for the state machine on which direction to shift from current position to achieve a desired gear
+    /// </summary>
+    /// <param name="position">The gear desired</param>
+    /// <returns>Whether the shift needs to be up or down to reach the gear.  Return Idle if unknown or unable to determine.</returns>
+    protected virtual TransferCaseState GetDirectionTo(TransferCasePosition position) => TransferCaseState.Idle;
+
     protected TransferCaseBase(GearSelectionMotor selectionMotor, ISafetyInterlock? safetyInterlock)
     {
         _motor = selectionMotor;
         _safetyInterlock = safetyInterlock;
     }
 
-    private int CurrentGearIndex
+    private int ConvertGearToIndex(TransferCasePosition position)
     {
-        get
+        for (var i = 0; i < SupportedGears.Length; i++)
         {
-            if (CurrentGear == TransferCasePosition.Unknown) return -1;
-
-            for (var i = 0; i < SupportedGears.Length; i++)
-            {
-                if (CurrentGear == SupportedGears[i]) return i;
-            }
-
-            return -1;
+            if (position == SupportedGears[i]) return i;
         }
+
+        return -1;
     }
 
     private TransferCaseState _state;
@@ -66,7 +68,142 @@ public abstract class TransferCaseBase : ITransferCase
         Task.Factory.StartNew(StateMachine, TaskCreationOptions.LongRunning);
     }
 
+    private int _lastCheckedIndex = -1;
+    private int _lastKnownValidGearIndex = -1;
+    private TransferCaseState _lastShiftDirection;
+
     private async Task StateMachine()
+    {
+        while (true)
+        {
+            try
+            {
+                if (_safetyInterlock != null && !_safetyInterlock.IsSafe)
+                {
+                    _motor.StopShift();
+                    State = TransferCaseState.Idle;
+                }
+                else if (_destinationGearIndex == -1)
+                {
+                    // unknown destination (we're just starting up) so do nothing
+                }
+                else
+                {
+                    var currentGear = CurrentGear;
+                    // convert the current to an index
+                    var currentIndex = ConvertGearToIndex(currentGear);
+
+                    if (currentIndex >= 0)
+                    {
+                        _lastKnownValidGearIndex = currentIndex;
+                    }
+
+                    // Resolver.Log.Info($"Current Gear: {currentGear} ({currentIndex}): destination {_destinationGearIndex}");
+
+                    if (currentIndex == _destinationGearIndex)
+                    {
+                        // we're at the destination
+                        // is this a state change?  if so, raise an event
+                        if (State != TransferCaseState.Idle)
+                        {
+                            GearChanged?.Invoke(this, currentGear);
+                        }
+
+                        _motor.StopShift();
+                        State = TransferCaseState.Idle;
+                    }
+                    else
+                    {
+                        if (currentIndex >= 0)
+                        {// we're in a gear, but it's not the destination
+                         // need to keep moving
+                            if (currentIndex != _lastCheckedIndex)
+                            {
+                                GearChanged?.Invoke(this, currentGear);
+                                State = TransferCaseState.Idle;
+                            }
+                        }
+
+                        switch (currentGear)
+                        {
+                            case TransferCasePosition.BeforeLowest:
+                                if (State == TransferCaseState.Idle)
+                                {
+                                    GearChanging?.Invoke(this, SupportedGears[_destinationGearIndex]);
+                                }
+                                State = _lastShiftDirection = TransferCaseState.ShiftingUp;
+                                _motor.BeginShiftUp();
+                                break;
+                            case TransferCasePosition.AboveHighest:
+                                if (State == TransferCaseState.Idle)
+                                {
+                                    GearChanging?.Invoke(this, SupportedGears[_destinationGearIndex]);
+                                }
+                                State = _lastShiftDirection = TransferCaseState.ShiftingDown;
+                                _motor.BeginShiftDown();
+                                break;
+                            default:
+                                if (_destinationGearIndex < _lastKnownValidGearIndex)
+                                {
+                                    if (State == TransferCaseState.Idle)
+                                    {
+                                        GearChanging?.Invoke(this, SupportedGears[_destinationGearIndex]);
+                                    }
+                                    State = _lastShiftDirection = TransferCaseState.ShiftingDown;
+                                    _motor.BeginShiftDown();
+                                }
+                                else if (_destinationGearIndex > _lastKnownValidGearIndex)
+                                {
+                                    if (State == TransferCaseState.Idle)
+                                    {
+                                        GearChanging?.Invoke(this, SupportedGears[_destinationGearIndex]);
+                                    }
+                                    State = _lastShiftDirection = TransferCaseState.ShiftingUp;
+
+                                    _motor.BeginShiftUp();
+                                }
+                                else if ((_destinationGearIndex == _lastKnownValidGearIndex) && currentGear == TransferCasePosition.BetweenGears)
+                                {
+                                    // we were in gear, but have "slipped" out
+                                    // see if the transfer case knows which way to go
+                                    var direction = GetDirectionTo(SupportedGears[_destinationGearIndex]);
+                                    // if it doesn't, keep going in the last known direction to find a gear
+                                    if (direction == TransferCaseState.Idle) direction = _lastShiftDirection;
+
+                                    if (State == TransferCaseState.Idle)
+                                    {
+                                        GearChanging?.Invoke(this, SupportedGears[_destinationGearIndex]);
+                                    }
+
+                                    if (direction == TransferCaseState.ShiftingUp)
+                                    {
+                                        State = _lastShiftDirection = TransferCaseState.ShiftingUp;
+                                        _motor.BeginShiftUp();
+                                    }
+                                    else
+                                    {
+                                        State = _lastShiftDirection = TransferCaseState.ShiftingDown;
+                                        _motor.BeginShiftDown();
+                                    }
+                                }
+
+                                break;
+                        }
+                    }
+
+                    _lastCheckedIndex = currentIndex;
+                }
+            }
+            catch (Exception ex)
+            {
+                Resolver.Log.Warn(ex.Message);
+            }
+
+            await Task.Delay(100);
+        }
+    }
+
+    private async Task StateMachine2()
     {
         while (true)
         {
@@ -79,27 +216,45 @@ public abstract class TransferCaseBase : ITransferCase
                 }
                 else
                 {
-                    var currentIndex = CurrentGearIndex;
+                    var currentIndex = ConvertGearToIndex(CurrentGear);
+                    if (currentIndex >= 0) _lastKnownValidGearIndex = currentIndex;
 
-                    if (CurrentGear == TransferCasePosition.Unknown && _destinationGearIndex < 0)
+                    if (currentIndex < 0 && _destinationGearIndex < 0)
                     {
                         // both are unknown - we're likely just starting up, so do nothing
                     }
-                    else if (_destinationGearIndex < currentIndex)
+                    else if (_destinationGearIndex < _lastKnownValidGearIndex)
                     {
+                        if (_lastCheckedIndex != currentIndex)
+                        {
+                            GearChanging?.Invoke(this, SupportedGears[_destinationGearIndex]);
+                        }
+
                         _motor.BeginShiftDown();
                         State = TransferCaseState.ShiftingDown;
                     }
-                    else if (_destinationGearIndex > currentIndex)
+                    else if (_destinationGearIndex > _lastKnownValidGearIndex)
                     {
+                        if (_lastCheckedIndex != currentIndex)
+                        {
+                            GearChanging?.Invoke(this, SupportedGears[_destinationGearIndex]);
+                        }
+
                         _motor.BeginShiftUp();
                         State = TransferCaseState.ShiftingUp;
                     }
                     else
                     {
+                        if (_lastCheckedIndex != currentIndex)
+                        {
+                            GearChanged?.Invoke(this, SupportedGears[currentIndex]);
+                        }
+
                         _motor.StopShift();
                         State = TransferCaseState.Idle;
                     }
+
+                    _lastCheckedIndex = currentIndex;
                 }
             }
             catch (Exception ex)
