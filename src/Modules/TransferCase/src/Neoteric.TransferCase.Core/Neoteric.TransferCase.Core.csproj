@@ -5,11 +5,12 @@
     <Nullable>enable</Nullable>
     <LangVersion>10</LangVersion>
     <RootNamespace>Neoteric.TransferCase</RootNamespace>
+    <Version>1.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\wilderness\Meadow.Foundation\Source\Meadow.Foundation.Core\Meadow.Foundation.Core.csproj" />
-    <ProjectReference Include="..\..\..\Neoteric.Core\Neoteric.Core.csproj" />
+    <ProjectReference Include="..\..\..\..\..\..\..\wilderness\Meadow.Foundation\Source\Meadow.Foundation.Core\Meadow.Foundation.Core.csproj" />
+    <ProjectReference Include="..\..\..\..\Neoteric.Core\Neoteric.Core.csproj" />
   </ItemGroup>
 
 </Project>

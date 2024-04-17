@@ -1,11 +1,76 @@
 # Neoteric Transfer Case support
 
-## Current Hardware
+An open-source hardware and software controller for automotive transfer cases.
 
-The current controller is the `NTCv1b`.  It supports:
+Software is written in CE using the Meadow software stack and currently targets the F7 Feather microcontroller hardware.
+
+Current version supports the following transfer cases:
 
 - Borg Warner 4419
 - Magna Power 3023NQH
+
+## Current Hardware
+
+The current controller is the `NTCv1b`.  
+
+![](doc/v1b/NTCv1b.jpg)
+
+## Schematic
+
+The schematic is available in [PDF Format](doc/v1b/schematic_NTCC_v1b.pdf)
+
+## Pinout
+
+### `U1`  
+Connector for a Wilderness Labs Meadow F7 Feather v2
+
+### `U5` 
+Upper Screw Terminals
+
+| Pin | Function |
+| --- | --- |
+| 1 | `12V` IN |
+| 2 | `5V` IN |
+| 3 | `5V` OUT |
+| 4 | `GND` |
+| 5 | `GND` |
+| 6 | `ENA` : Must be grounded to enable controller |
+| 7 | `REL1+` : 12V to coil of shift motor relay 1 |
+| 8 | `REL1-` : Ground to coil of shift motor relay 1 |
+
+### `U6` 
+Lower Screw Terminals
+
+| Pin | Function |
+| --- | --- |
+| 1 | `REL2+` : 12V to coil of shift motor relay 2 |
+| 2 | `REL2-` : Ground to coil of shift motor relay 2 |
+| 3 | `SEL_SW` Voltage output to 3-position gear selector switch |
+| 4 | `TC_POS` 5V Input for transfer case position sensor (on MP3023NQH only) |
+| 5 | `SW1` 5V input for transfer case position switch 1 (on BW4419 only) |
+| 6 | `SW2` 5V input for transfer case position switch 2 (on BW4419 only) |
+| 7 | `SW3` 5V input for transfer case position switch 3 (on BW4419 only) |
+| 8 | `SW4` 5V input for transfer case position switch 4 (on BW4419 only) |
+
+
+### `U4` 
+Debug Display.  Connect an optional SSD1306 Display module for debugging.
+
+| Pin | Function |
+| --- | --- |
+| 1 | 5V |
+| 2 | GND |
+| 3 | SDA |
+| 4 | SCL |
+
+### `J1`
+Transfer Case Selector.  Use a jumper to select the connected transfer case.  Up selects an MP3023NQH, down selects a BW4419.
+
+| Pin | Function |
+| --- | --- |
+| 1 | MP3023 |
+| 2 | Selector |
+| 3 | BW4419 |
 
 ## Notes/Work Items for next Version
 

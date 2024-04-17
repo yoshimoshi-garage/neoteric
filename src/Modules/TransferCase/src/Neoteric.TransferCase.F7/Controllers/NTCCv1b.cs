@@ -3,6 +3,7 @@ using Meadow.Devices;
 using Meadow.Foundation.Displays;
 using Meadow.Hardware;
 using System;
+using System.Reflection;
 using static Meadow.Foundation.Motors.BidirectionalDcMotor;
 
 namespace Neoteric.TransferCase.F7;
@@ -57,7 +58,6 @@ public class NTCCv1b : ITransferCaseController
 
         using var selectionPort = device.Pins.D06.CreateDigitalInputPort(Meadow.Hardware.ResistorMode.Disabled);
 
-        Resolver.Log.Info($" Motor");
         var motor = new GearSelectionMotor(device.Pins.D01, device.Pins.D00);
         motor.StateChanged += OnMotorStateChanged;
 
@@ -77,13 +77,12 @@ public class NTCCv1b : ITransferCaseController
             _displayService?.Report($"ENA: disabled");
         }
 
+        string versionInfo;
+
         if (selectionPort.State)
         {
-            Resolver.Log.Info("SELECTION JUMPER IS HIGH - BW4419");
+            versionInfo = $"BW4419 v{Assembly.GetExecutingAssembly().GetName().Version.ToString(3)}";
 
-            _displayService?.Report("BW4419");
-
-            Resolver.Log.Info($" Transfer case");
             var sw1 = device.Pins.D13.CreateDigitalInputPort(ResistorMode.InternalPullDown);
             var sw2 = device.Pins.D12.CreateDigitalInputPort(ResistorMode.InternalPullDown);
             var sw3 = device.Pins.D11.CreateDigitalInputPort(ResistorMode.InternalPullDown);
@@ -94,11 +93,13 @@ public class NTCCv1b : ITransferCaseController
         }
         else
         {
-            Resolver.Log.Info("SELECTION JUMPER IS LOW - MP3023NQH");
-            _displayService?.Report("MP3023NQH");
+            versionInfo = $"MP3023NQH v{Assembly.GetExecutingAssembly().GetName().Version.ToString(3)}";
 
             _transferCase = new MP3023NQH(motor, device.Pins.A01.CreateAnalogInputPort(3), interlock);
         }
+
+        Resolver.Log.Info(versionInfo);
+        _displayService?.Report(versionInfo);
 
         _transferCase.GearChanged += OnTransferCaseGearChanged;
         _transferCase.GearChanging += OnTransferCaseGearChanging;
