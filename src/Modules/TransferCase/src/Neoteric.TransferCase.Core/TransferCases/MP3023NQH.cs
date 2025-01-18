@@ -15,8 +15,9 @@ public class MP3023NQH : TransferCaseBase
     public MP3023NQH(
         GearSelectionMotor motor,
         IAnalogInputPort positionSensorPort,
-        ISafetyInterlock? safetyInterlock)
-        : base(motor, safetyInterlock)
+        ISafetyInterlock? safetyInterlock,
+        IDigitalOutputPort? hubLockEnable)
+        : base(motor, safetyInterlock, hubLockEnable)
     {
         _positionSensor = positionSensorPort;
         _gearSensorConfig = new GearSensorConfig();

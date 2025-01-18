@@ -1,4 +1,5 @@
 ﻿using Meadow;
+using Meadow.Hardware;
 using System;
 using System.Threading.Tasks;
 
@@ -18,6 +19,7 @@ public abstract class TransferCaseBase : ITransferCase
 
     private readonly GearSelectionMotor _motor;
     private readonly ISafetyInterlock? _safetyInterlock;
+    private readonly IDigitalOutputPort? _hubLockEnable;
     private int _destinationGearIndex = -1;
 
     public abstract TransferCasePosition CurrentGear { get; }
@@ -35,10 +37,15 @@ public abstract class TransferCaseBase : ITransferCase
     /// <returns>Whether the shift needs to be up or down to reach the gear.  Return Idle if unknown or unable to determine.</returns>
     protected virtual TransferCaseState GetDirectionTo(TransferCasePosition position) => TransferCaseState.Idle;
 
-    protected TransferCaseBase(GearSelectionMotor selectionMotor, ISafetyInterlock? safetyInterlock)
+    protected TransferCaseBase(
+        GearSelectionMotor selectionMotor,
+        ISafetyInterlock? safetyInterlock,
+        IDigitalOutputPort? hubLockEnable
+    )
     {
         _motor = selectionMotor;
         _safetyInterlock = safetyInterlock;
+        _hubLockEnable = hubLockEnable;
     }
 
     private int ConvertGearToIndex(TransferCasePosition position)
@@ -283,6 +290,20 @@ public abstract class TransferCaseBase : ITransferCase
         {
             // nonsense.  we won't shift to an unknown
             return;
+        }
+
+        if (_hubLockEnable != null)
+        {
+            switch (position)
+            {
+                case TransferCasePosition.Low4:
+                case TransferCasePosition.High4:
+                    _hubLockEnable.State = true;
+                    break;
+                default:
+                    _hubLockEnable.State = false;
+                    break;
+            }
         }
 
         _destinationGearIndex = destinationIndex;

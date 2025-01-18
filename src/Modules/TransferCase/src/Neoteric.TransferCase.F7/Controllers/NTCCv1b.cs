@@ -95,7 +95,11 @@ public class NTCCv1b : ITransferCaseController
         {
             versionInfo = $"MP3023NQH v{Assembly.GetExecutingAssembly().GetName().Version.ToString(3)}";
 
-            _transferCase = new MP3023NQH(motor, device.Pins.A01.CreateAnalogInputPort(3), interlock);
+            _transferCase = new MP3023NQH(
+                motor,
+                device.Pins.A01.CreateAnalogInputPort(3),
+                interlock,
+                device.Pins.D04.CreateDigitalOutputPort(false));
         }
 
         Resolver.Log.Info(versionInfo);

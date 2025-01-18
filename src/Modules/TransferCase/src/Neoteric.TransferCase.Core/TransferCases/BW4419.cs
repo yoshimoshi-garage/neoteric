@@ -21,7 +21,7 @@ public class BW4419 : TransferCaseBase
         IDigitalInputPort positionSwitch3,
         IDigitalInputPort positionSwitch4,
         ISafetyInterlock? safetyInterlock)
-        : base(motor, safetyInterlock)
+        : base(motor, safetyInterlock, null)
     {
         _positionTruthTable.Add((1 << 0) | (1 << 2), TransferCasePosition.High2);     // 1 + 3
         _positionTruthTable.Add((1 << 1) | (1 << 2) | (1 << 3), TransferCasePosition.High4); // 2 + 3 + 4
