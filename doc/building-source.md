@@ -24,7 +24,7 @@ First, create an empty directory on your development machine for the source code
 Next, install `gitfo` from the Command Line:
 
 ```
-> dotnet tool install --global RadishTools.Gitfo --version 0.3.0
+> dotnet tool install --global RadishTools.Gitfo
 ```
 
 Now download or create a file named `.gitfo` (starts with a period character) in that folder [with the contents found here].
