@@ -35,3 +35,7 @@ We will be developing and open-sourcing code fo all of our work
 We will try to find standard, inexpensive, appropriate enclosures When not feasible, we will be developing and open-sourcing things like enclosures, brackets and whatnot and publishing STLs to allow 3D printing or CNC machining of the parts.
 
 Stay tuned, and if you'd like to help out, let us know.
+
+## Building the Source Code
+
+If you want to build the source code yourself, [follow the instructions here](doc/building-source.md).
