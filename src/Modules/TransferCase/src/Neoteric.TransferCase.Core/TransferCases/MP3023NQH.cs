@@ -36,7 +36,15 @@ public class MP3023NQH : TransferCaseBase
         // 4LOW: 1.45V
         //  2HI: 2.45V
         //  4HI: 3.45V
-        // The TCC v1b uses a voltage divider (1.7k and 3.3k) to pull 0-5 down to 0-3.3.  Mapped values:
+        // 
+        // Since the transfer case uses 5V, but the ADC on the hardware can only read from 0-3.3,
+        // the TCC v1b uses a voltage divider (1.7k and 3.3k) to scale the 0-5V input down to 0-3.3V
+        // 
+        // Mapped values
+        //  - column 1 is the raw (0-5V) voltage from the TC
+        //  - column 2 is the theoretical value read by the ADC after going through the voltage divider
+        //  - column 3 are actual measured values on hardware
+        //
         // INPUT  THEORETICAL   MEASURED
         //  1.0V     0.66V       0.72V
         //  1.3      0.86        0.95V
