@@ -1,0 +1,64 @@
+{
+  "profiles": {
+    "default": {
+      "repos": [
+        {
+          "owner": "WildernessLabs",
+          "repo": "Meadow.Contracts",
+          "defaultBranch": "develop",
+          "pat": null,
+          "folder": "wilderness"
+        },
+        {
+          "owner": "WildernessLabs",
+          "repo": "Meadow.Core",
+          "defaultBranch": "develop",
+          "pat": null,
+          "folder": "wilderness"
+        },
+        {
+          "owner": "WildernessLabs",
+          "repo": "Meadow.Foundation",
+          "defaultBranch": "develop",
+          "pat": null,
+          "folder": "wilderness"
+        },
+        {
+          "owner": "WildernessLabs",
+          "repo": "Meadow.Logging",
+          "defaultBranch": "develop",
+          "pat": null,
+          "folder": "wilderness"
+        },
+        {
+          "owner": "WildernessLabs",
+          "repo": "Meadow.Modbus",
+          "defaultBranch": "develop",
+          "pat": null,
+          "folder": "wilderness"
+        },
+        {
+          "owner": "WildernessLabs",
+          "repo": "Meadow.Units",
+          "defaultBranch": "develop",
+          "pat": null,
+          "folder": "wilderness"
+        },
+        {
+          "owner": "WildernessLabs",
+          "repo": "MQTTnet",
+          "defaultBranch": "develop",
+          "pat": null,
+          "folder": "wilderness"
+        },
+        {
+          "owner": "yoshimoshi-garage",
+          "repo": "neoteric",
+          "defaultBranch": "main",
+          "pat": null,
+          "folder": "yoshimoshi"
+        }
+      ]
+    }
+  }
+}
