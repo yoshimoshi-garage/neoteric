@@ -27,7 +27,7 @@ Next, install `gitfo` from the Command Line:
 > dotnet tool install --global RadishTools.Gitfo
 ```
 
-Now download or create a file named `.gitfo` (starts with a period character) in that folder [with the contents found here].
+Now download or create a file named `.gitfo` (starts with a period character) in that folder [with the contents found here](.gitfo).
 
 In the command window, navigate to the folder and run `gitfo sync`
 
