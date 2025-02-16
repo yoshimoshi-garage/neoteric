@@ -3,3 +3,31 @@ Lifecycle:
 Logging:
     LogLevel:
         Default: Information
+
+Interlock:
+    Enabled: true
+
+GearLock:
+    Enabled: true
+    Delay: 0
+
+Switch:
+    Low4:
+        Min: 1.0
+        Max: 1.23
+    High4:
+        Min: 1.23
+        Max: 1.52
+    High2:
+        Min: 1.52
+        Max: 2.25
+TCase:
+    Low4:
+        Min: 1.4
+        Max: 1.5
+    High4:
+        Min: 3.4
+        Max: 3.5
+    High2:
+        Min: 2.4
+        Max: 2.5

@@ -38,7 +38,7 @@ public class NTCCv1b : ITransferCaseController
     private readonly ITransferCaseGearSelector _gearSelector;
     private readonly DisplayService? _displayService;
 
-    public NTCCv1b(F7FeatherV2 device, bool interlockEnable = true)
+    public NTCCv1b(F7FeatherV2 device, ITransferCaseSettings settings)
     {
         // do we have a display attached?
         var i2c = device.CreateI2cBus(I2cBusSpeed.High);
@@ -63,7 +63,7 @@ public class NTCCv1b : ITransferCaseController
 
         ISafetyInterlock? interlock = null;
 
-        if (interlockEnable)
+        if (settings.InterlockEnabled)
         {
             interlock = new SafetyInterlockSwitch(device.Pins.D05);
             _displayService?.Report($"ENA: {(interlock.IsSafe ? "safe" : "not safe")}");
