@@ -1,4 +1,5 @@
-﻿using Meadow.Foundation.Graphics;
+﻿using Meadow;
+using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Graphics.MicroLayout;
 using Meadow.Peripherals.Displays;
 
@@ -48,6 +49,8 @@ internal class DisplayService
 
     public void Report(string message)
     {
+        Resolver.Log.Info(message);
+
         _screen.BeginUpdate();
 
         while (_currentRow >= _rows)

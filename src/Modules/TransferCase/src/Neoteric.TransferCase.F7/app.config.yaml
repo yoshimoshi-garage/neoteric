@@ -23,11 +23,11 @@ Switch:
         Max: 2.25
 TCase:
     Low4:
-        Min: 1.4
-        Max: 1.5
+        Min: 1.36
+        Max: 1.45
     High4:
-        Min: 3.4
-        Max: 3.5
+        Min: 3.38
+        Max: 3.56
     High2:
-        Min: 2.4
-        Max: 2.5
+        Min: 2.41
+        Max: 2.52

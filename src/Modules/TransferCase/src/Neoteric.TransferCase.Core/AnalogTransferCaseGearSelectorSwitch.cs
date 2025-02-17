@@ -53,6 +53,14 @@ public abstract class AnalogTransferCaseGearSelectorSwitch : ITransferCaseGearSe
         }
     }
 
+    public void ReportSettings()
+    {
+        foreach (var position in _switchPositions)
+        {
+            Resolver.Log.Info($"{position.Position}: {position.MinVoltage}..{position.MaxVoltage}");
+        }
+    }
+
     private void SwitchCheckTimerProc(object _)
     {
         if (IsDisposed) return;

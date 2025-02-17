@@ -15,12 +15,12 @@ public interface ISelectorSwitchVoltageSettings
 
     private static readonly Dictionary<string, Action<ISelectorSwitchVoltageSettings, double>> _setters = new()
     {
-        ["Switch:Low4:Min"] = (settings, value) => settings.Low4Min = value,
-        ["Switch:Low4:Max"] = (settings, value) => settings.Low4Max = value,
-        ["Switch:High4:Min"] = (settings, value) => settings.High4Min = value,
-        ["Switch:High4:Max"] = (settings, value) => settings.High4Max = value,
-        ["Switch:High2:Min"] = (settings, value) => settings.High2Min = value,
-        ["Switch:High2:Max"] = (settings, value) => settings.High2Max = value
+        ["Switch.Low4.Min"] = (settings, value) => settings.Low4Min = value,
+        ["Switch.Low4.Max"] = (settings, value) => settings.Low4Max = value,
+        ["Switch.High4.Min"] = (settings, value) => settings.High4Min = value,
+        ["Switch.High4.Max"] = (settings, value) => settings.High4Max = value,
+        ["Switch.High2.Min"] = (settings, value) => settings.High2Min = value,
+        ["Switch.High2.Max"] = (settings, value) => settings.High2Max = value
     };
 
     private bool ParseVoltage(string name, string candidate, out double value)
@@ -33,7 +33,7 @@ public interface ISelectorSwitchVoltageSettings
             }
             else
             {
-                Resolver.Log.Info($"Switch:Low4:Min from app settings: {d:N2}");
+                Resolver.Log.Info($"{name} from app settings: {d:N2}");
                 value = d;
                 return true;
             }

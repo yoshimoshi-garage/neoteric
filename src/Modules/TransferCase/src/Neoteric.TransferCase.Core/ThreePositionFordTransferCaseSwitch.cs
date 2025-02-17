@@ -5,7 +5,7 @@ namespace Neoteric.TransferCase;
 
 public class ThreePositionFordTransferCaseSwitch : AnalogTransferCaseGearSelectorSwitch
 {
-    private static TransferCaseSwitchSelectionBounds[] GenerateRequesters()
+    private static TransferCaseSwitchSelectionBounds[] GenerateRequesters(ISelectorSwitchVoltageSettings settings)
     {
         return new TransferCaseSwitchSelectionBounds[]
         {
@@ -21,29 +21,30 @@ public class ThreePositionFordTransferCaseSwitch : AnalogTransferCaseGearSelecto
             {
                 Position = TransferCasePosition.Low4,
                 SwitchResistance = 130.Ohms(),
-                MinVoltage = 1.00.Volts(),
-                MaxVoltage = 1.23.Volts()
+                MinVoltage = settings.Low4Min.Volts(), // 1.00.Volts(),
+                MaxVoltage = settings.Low4Max.Volts(), // 1.23.Volts()
             },
             new TransferCaseSwitchSelectionBounds
             {
                 Position = TransferCasePosition.High4,
                 SwitchResistance = 270.Ohms(),
-                MinVoltage = 1.23.Volts(),
-                MaxVoltage = 1.52.Volts()
+                MinVoltage = settings.High4Min.Volts(), // 1.23.Volts(),
+                MaxVoltage = settings.High4Max.Volts(), // 1.52.Volts()
             },
             new TransferCaseSwitchSelectionBounds
             {
                 Position = TransferCasePosition.High2,
                 SwitchResistance = 620.Ohms(),
-                MinVoltage = 1.52.Volts(),
-                MaxVoltage = 2.25.Volts()
+                MinVoltage = settings.High2Min.Volts(), // 1.52.Volts(),
+                MaxVoltage = settings.High2Max.Volts(), // 2.25.Volts()
             }
         };
     }
 
-    public ThreePositionFordTransferCaseSwitch(IAnalogInputPort inputPort)
-        : base(inputPort, GenerateRequesters())
+    public ThreePositionFordTransferCaseSwitch(IAnalogInputPort inputPort, ISelectorSwitchVoltageSettings settings)
+        : base(inputPort, GenerateRequesters(settings))
 
     {
+        ReportSettings();
     }
 }

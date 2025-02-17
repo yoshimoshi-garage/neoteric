@@ -99,7 +99,8 @@ public class NTCCv1b : ITransferCaseController
                 motor,
                 device.Pins.A01.CreateAnalogInputPort(3),
                 interlock,
-                device.Pins.D04.CreateDigitalOutputPort(false));
+                device.Pins.D04.CreateDigitalOutputPort(false),
+                settings);
         }
 
         Resolver.Log.Info(versionInfo);
@@ -108,7 +109,7 @@ public class NTCCv1b : ITransferCaseController
         _transferCase.GearChanged += OnTransferCaseGearChanged;
         _transferCase.GearChanging += OnTransferCaseGearChanging;
 
-        _gearSelector = new ThreePositionFordTransferCaseSwitch(device.Pins.A00.CreateAnalogInputPort());
+        _gearSelector = new ThreePositionFordTransferCaseSwitch(device.Pins.A00.CreateAnalogInputPort(), settings.SwitchVoltageSettings);
         _gearSelector.RequestedPositionChanged += OnGearSelectorRequestedPositionChanged;
 
         _transferCase.RequestShiftTo(_gearSelector.RequestedPosition);
