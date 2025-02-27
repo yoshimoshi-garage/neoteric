@@ -9,8 +9,8 @@ public class TransferCaseSettings<TSwitchSetting, TTCaseSettings>
     where TTCaseSettings : ITransferCaseVoltageSettings, new()
 {
     public bool InterlockEnabled { get; set; } = true;
-    public bool GearLockEnabled { get; set; } = true;
-    public int GearLockDelay { get; set; } = 0;
+    public bool GearUnlockEnabled { get; set; } = true;
+    public int GearUnlockDelay { get; set; } = 0;
 
     public ISelectorSwitchVoltageSettings SwitchVoltageSettings { get; set; }
     public ITransferCaseVoltageSettings TransferCaseVoltageSettings { get; set; }
@@ -28,21 +28,21 @@ public class TransferCaseSettings<TSwitchSetting, TTCaseSettings>
             }
         }
 
-        if (settings.TryGetValue("GearLock.Enabled", out v))
+        if (settings.TryGetValue("GearUnlock.Enabled", out v))
         {
             if (bool.TryParse(v, out bool b))
             {
                 Resolver.Log.Info($"GearLock.Enabled from app settings: {b}");
-                GearLockEnabled = b;
+                GearUnlockEnabled = b;
             }
         }
 
-        if (settings.TryGetValue("GearLock.Delay", out v))
+        if (settings.TryGetValue("GearUnlock.Delay", out v))
         {
             if (int.TryParse(v, out int b))
             {
-                Resolver.Log.Info($"GearLock.Delay from app settings: {b}");
-                GearLockDelay = b;
+                Resolver.Log.Info($"GearUnlock.Delay from app settings: {b}");
+                GearUnlockDelay = b;
             }
         }
 

@@ -7,9 +7,9 @@ Logging:
 Interlock:
     Enabled: true
 
-GearLock:
+GearUnlock:
     Enabled: true
-    Delay: 0
+    Delay: 50
 
 Switch:
     Low4:

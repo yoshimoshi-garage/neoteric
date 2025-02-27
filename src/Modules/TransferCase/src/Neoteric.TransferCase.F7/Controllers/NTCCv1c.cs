@@ -11,7 +11,7 @@ namespace Neoteric.TransferCase.F7;
 /// <summary>
 /// Controller for either the BW4419 or MP3023NQH Transfer cases using the Ford 3-position selector switch
 /// </summary>
-public class NTCCv1b : ITransferCaseController
+public class NTCCv1c : ITransferCaseController
 {
     /*
     F7Featherv2 pin map for the NTCv1b
@@ -40,7 +40,7 @@ public class NTCCv1b : ITransferCaseController
     private readonly ITransferCaseGearSelector _gearSelector;
     private readonly DisplayService? _displayService;
 
-    public NTCCv1b(F7FeatherV2 device, ITransferCaseSettings settings)
+    public NTCCv1c(F7FeatherV2 device, ITransferCaseSettings settings)
     {
         // do we have a display attached?
         var i2c = device.CreateI2cBus(I2cBusSpeed.High);
@@ -63,8 +63,8 @@ public class NTCCv1b : ITransferCaseController
         var motor = new GearSelectionMotor(
             device.Pins.D01,
             device.Pins.D00,
-            null,
-            null);
+            settings.GearUnlockEnabled ? device.Pins.D03 : null,
+            settings.GearUnlockEnabled ? TimeSpan.FromMilliseconds(settings.GearUnlockDelay) : null);
 
         motor.StateChanged += OnMotorStateChanged;
 

@@ -6,7 +6,7 @@
     <AssemblyName>App</AssemblyName>
     <LangVersion>10</LangVersion>
     <Nullable>enable</Nullable>
-    <Version>1.2</Version>
+    <Version>1.3</Version>
   </PropertyGroup>
   <ItemGroup>
     <None Include="app.config.yaml">

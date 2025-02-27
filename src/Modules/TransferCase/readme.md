@@ -9,11 +9,15 @@ Current version supports the following transfer cases:
 - Borg Warner 4419
 - Magna Power 3023NQH
 
+## Previous Hardware
+
+<img src="doc/v1b/NTCv1b.jpg" width=200 />
+
 ## Current Hardware
 
-The current controller is the `NTCv1b`.  
+The current controller is the `NTCv1c`.  
 
-![](doc/v1b/NTCv1b.jpg)
+![](doc/v1b/NTCv1c.jpg)
 
 ## Schematic
 
@@ -24,8 +28,8 @@ The schematic is available in [PDF Format](doc/v1b/schematic_NTCC_v1b.pdf)
 ### `U1`  
 Connector for a Wilderness Labs Meadow F7 Feather v2
 
-### `U5` 
-Upper Screw Terminals
+### `U3` 
+Screw Terminals
 
 | Pin | Function |
 | --- | --- |
@@ -37,20 +41,16 @@ Upper Screw Terminals
 | 6 | `ENA` : Must be grounded to enable controller |
 | 7 | `REL1+` : 12V to coil of shift motor relay 1 |
 | 8 | `REL1-` : Ground to coil of shift motor relay 1 |
-
-### `U6` 
-Lower Screw Terminals
-
-| Pin | Function |
-| --- | --- |
-| 1 | `REL2+` : 12V to coil of shift motor relay 2 |
-| 2 | `REL2-` : Ground to coil of shift motor relay 2 |
-| 3 | `SEL_SW` Voltage output to 3-position gear selector switch |
-| 4 | `TC_POS` 5V Input for transfer case position sensor (on MP3023NQH only) |
-| 5 | `SW1` 5V input for transfer case position switch 1 (on BW4419 only) |
-| 6 | `SW2` 5V input for transfer case position switch 2 (on BW4419 only) |
-| 7 | `SW3` 5V input for transfer case position switch 3 (on BW4419 only) |
-| 8 | `SW4` 5V input for transfer case position switch 4 (on BW4419 only) |
+| 9 | `REL2+` : 12V to coil of shift motor relay 2 |
+| 10 | `REL2-` : Ground to coil of shift motor relay 2 |
+| 11 | `SEL_SW` Voltage output to 3-position gear selector switch |
+| 12 | `TC_POS` 5V Input for transfer case position sensor (on MP3023NQH only) |
+| 13 | `SW1` 5V input for transfer case position switch 1 (on BW4419 only) |
+| 14 | `SW2` 5V input for transfer case position switch 2 (on BW4419 only) |
+| 15 | `SW3` 5V input for transfer case position switch 3 (on BW4419 only) |
+| 16 | `SW4` 5V input for transfer case position switch 4 (on BW4419 only) |
+| 17 | `HUB` Hub Lock Input - drives to ground to lock hubs when 4WD is selected |
+| 18 | `SW4` TCASE Unlock Output - Output 12V when shift is in-progress (on BW4419 only) |
 
 
 ### `U4` 

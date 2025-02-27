@@ -1,15 +1,16 @@
 ﻿using Meadow;
 using Meadow.Hardware;
 using Neoteric.TransferCase;
+using System;
 using System.Threading.Tasks;
 
 namespace Neaoteric.TransferCase.Test;
 
 public static class RawHardwareExercises
 {
-    public static async Task SimpleRelayCycles(IPin pinA, IPin pinB)
+    public static async Task SimpleRelayCycles(IPin pinA, IPin pinB, IPin unlock, int releaseDelay = 200)
     {
-        var motor = new GearSelectionMotor(pinA, pinB);
+        var motor = new GearSelectionMotor(pinA, pinB, unlock, TimeSpan.FromMilliseconds(releaseDelay));
 
         while (true)
         {
@@ -91,7 +92,7 @@ public static class RawHardwareExercises
 
             Resolver.Log.Info($"Input: {result.Volts:N2} V");
 
-            await Task.Delay(1000);
+            await Task.Delay(5000);
         }
     }
 
@@ -106,6 +107,32 @@ public static class RawHardwareExercises
             Resolver.Log.Info($"Position Input: {result.Volts:N2} V");
 
             await Task.Delay(1000);
+        }
+    }
+
+    public static async Task ToggleHubLock(IPin outputPin)
+    {
+        var output = outputPin.CreateDigitalOutputPort(false);
+
+        while (true)
+        {
+            output.State = !output.State;
+            Resolver.Log.Info($"Hub: {output.State}");
+
+            await Task.Delay(2000);
+        }
+    }
+
+    public static async Task ToggleMotorLock(IPin outputPin)
+    {
+        var output = outputPin.CreateDigitalOutputPort(false);
+
+        while (true)
+        {
+            output.State = !output.State;
+            Resolver.Log.Info($"Motor Lock: {output.State}");
+
+            await Task.Delay(2000);
         }
     }
 }
