@@ -7,7 +7,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AssemblyName>Neoteric</AssemblyName>
     <ApplicationIcon>Assets\space-monkey.ico</ApplicationIcon>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
