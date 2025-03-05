@@ -78,7 +78,17 @@ namespace Neoteric.Desktop.ViewModels
                 StatusMessage = "Reading device settings...";
                 HasError = false;
 
-                var connection = _connectionManager.GetCurrentConnection();
+                IMeadowConnection? connection = null;
+
+                connection = _connectionManager.GetConnectionForRoute(SelectedPort);
+
+                if (connection == null)
+                {
+                    StatusMessage = "Unable to find device on port";
+                    HasError = true;
+                    return;
+                }
+
                 await connection.Attach();
                 var settingsManager = new MeadowSettingsManager(connection.Device);
                 var settings = await settingsManager.ReadAppSettings();

@@ -5,6 +5,9 @@
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyName>Neoteric</AssemblyName>
+    <ApplicationIcon>Assets\space-monkey.ico</ApplicationIcon>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,11 +26,12 @@
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.2.*" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.2.*" />
       <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.2.*" />
-      <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.*" />      
+      <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.*" />
+      <PackageReference Include="Velopack" Version="0.0.1053" />      
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\wilderness\Meadow.CLI\Source\Meadow.CLI\Meadow.CLI.csproj" />
     <ProjectReference Include="..\..\..\..\wilderness\Meadow.CLI\Source\Meadow.HCom\Meadow.HCom.csproj" />
+    <ProjectReference Include="..\..\..\..\wilderness\Meadow.CLI\Source\Meadow.Tooling.Core\Meadow.Tooling.Core.csproj" />
   </ItemGroup>
 </Project>

@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         x:Class="Neoteric.Desktop.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/space-monkey.ico"
         Title="Transfer Case Settings Adjustment"
         SizeToContent="WidthAndHeight"
         MinWidth="400">
