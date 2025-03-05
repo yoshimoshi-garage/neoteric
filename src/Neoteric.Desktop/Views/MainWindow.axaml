@@ -9,149 +9,153 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/space-monkey.ico"
         Title="Transfer Case Settings Adjustment"
-        SizeToContent="WidthAndHeight"
-        MinWidth="400">
+        Width="480" Height="600"
+        MinWidth="450" MinHeight="400"
+        MaxWidth="600" MaxHeight="800"
+        CanResize="True">
 
-    <Design.DataContext>
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+	<Design.DataContext>
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
 
-    <Window.Resources>
-        <converters:BooleanConverter x:Key="BooleanConverter"/>
-        <converters:StringConverter x:Key="StringConverter"/>
-    </Window.Resources>
+	<Window.Resources>
+		<converters:BooleanConverter x:Key="BooleanConverter"/>
+		<converters:StringConverter x:Key="StringConverter"/>
+	</Window.Resources>
 
-    <Grid Margin="20" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
-        <!-- Status Bar -->
-        <Border Grid.Row="0"
-                BorderBrush="LightGray"
-                BorderThickness="1"
-                Padding="10"
-                Margin="0,0,0,20">
-            <TextBlock Text="{Binding StatusMessage}"
-                       Classes.error="{Binding HasError}">
-                <TextBlock.Styles>
-                    <Style Selector="TextBlock.error">
-                        <Setter Property="Foreground" Value="Red"/>
-                    </Style>
-                </TextBlock.Styles>
-            </TextBlock>
-        </Border>
+	<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+		<Grid Margin="20" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+			<!-- Status Bar -->
+			<Border Grid.Row="0"
+					BorderBrush="LightGray"
+					BorderThickness="1"
+					Padding="10"
+					Margin="0,0,0,20">
+				<TextBlock Text="{Binding StatusMessage}"
+						   Classes.error="{Binding HasError}">
+					<TextBlock.Styles>
+						<Style Selector="TextBlock.error">
+							<Setter Property="Foreground" Value="Red"/>
+						</Style>
+					</TextBlock.Styles>
+				</TextBlock>
+			</Border>
 
-        <!-- Port Selection and Controls -->
-        <StackPanel Grid.Row="1"
-                    Orientation="Horizontal"
-                    Spacing="10"
-                    Margin="0,0,0,20">
-            <ComboBox ItemsSource="{Binding AvailablePorts}"
-                      SelectedItem="{Binding SelectedPort}"
-                      Width="200"/>
-            <Button Content="⟳"
-                    Command="{Binding RefreshPortsCommand}"
-                    VerticalAlignment="Center"/>
-            <Button Content="Get Data"
-                    Command="{Binding GetDataCommand}"
-                    VerticalAlignment="Center"
-                    Padding="10,7"/>
-        </StackPanel>
+			<!-- Port Selection and Controls -->
+			<StackPanel Grid.Row="1"
+						Orientation="Horizontal"
+						Spacing="10"
+						Margin="0,0,0,20">
+				<ComboBox ItemsSource="{Binding AvailablePorts}"
+						  SelectedItem="{Binding SelectedPort}"
+						  Width="200"/>
+				<Button Content="⟳"
+						Command="{Binding RefreshPortsCommand}"
+						VerticalAlignment="Center"/>
+				<Button Content="Get Data"
+						Command="{Binding GetDataCommand}"
+						VerticalAlignment="Center"
+						Padding="10,7"/>
+			</StackPanel>
 
-        <!-- System Settings Table -->
-        <StackPanel Grid.Row="2" Margin="0,0,0,20">
-            <TextBlock Text="System Settings" FontWeight="Bold" Margin="0,0,0,5"/>
-            <DataGrid ItemsSource="{Binding SystemItems}"
-                      AutoGenerateColumns="False"
-                      IsReadOnly="False"
-                      GridLinesVisibility="All"
-                      BorderThickness="1"
-                      BorderBrush="Gray"
-                      Width="400"
-                      MaxHeight="400"
-                      ScrollViewer.VerticalScrollBarVisibility="Auto">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Setting"
-                                      Binding="{Binding FullKey}"
-                                      IsReadOnly="True"
-                                      Width="200"/>
-                    <DataGridTemplateColumn Header="Value" Width="*">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Panel>
-                                    <!-- Show ToggleSwitch for Enabled properties -->
+			<!-- System Settings Table -->
+			<StackPanel Grid.Row="2" Margin="0,0,0,20">
+				<TextBlock Text="System Settings" FontWeight="Bold" Margin="0,0,0,5"/>
+				<DataGrid ItemsSource="{Binding SystemItems}"
+						  AutoGenerateColumns="False"
+						  IsReadOnly="False"
+						  GridLinesVisibility="All"
+						  BorderThickness="1"
+						  BorderBrush="Gray"
+						  Width="400"
+						  MaxHeight="300"
+						  ScrollViewer.VerticalScrollBarVisibility="Auto">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Setting"
+										  Binding="{Binding FullKey}"
+										  IsReadOnly="True"
+										  Width="200"/>
+						<DataGridTemplateColumn Header="Value" Width="*">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<Panel>
+										<!-- Show ToggleSwitch for Enabled properties -->
                                     <ToggleSwitch IsChecked="{Binding Value, Converter={x:Static converters:BooleanConverter.Instance}}"
                                                  IsVisible="{Binding Key, Converter={x:Static converters:StringConverter.Instance}, ConverterParameter=Enabled}"
-                                                 OnContent=""
-                                                 OffContent=""
-                                                 Margin="-10,0"/>
-                                    <!-- Show TextBox for other properties -->
-                                    <TextBox Text="{Binding Value}"
+													 OnContent=""
+													 OffContent=""
+													 Margin="-10,0"/>
+										<!-- Show TextBox for other properties -->
+										<TextBox Text="{Binding Value}"
                                             IsVisible="{Binding Key, Converter={x:Static converters:StringConverter.Instance}, ConverterParameter=!Enabled}"/>
-                                </Panel>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
-        </StackPanel>
+									</Panel>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+			</StackPanel>
 
-        <!-- Switch Settings Table -->
-        <StackPanel Grid.Row="3" Margin="0,0,0,20">
-            <TextBlock Text="Switch Settings" FontWeight="Bold" Margin="0,0,0,5"/>
-            <DataGrid ItemsSource="{Binding SwitchItems}"
-                      AutoGenerateColumns="False"
-                      IsReadOnly="False"
-                      GridLinesVisibility="All"
-                      BorderThickness="1"
-                      BorderBrush="Gray"
-                      Width="400"
-                      MaxHeight="400"
-                      ScrollViewer.VerticalScrollBarVisibility="Auto">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Key"
-                                      Binding="{Binding Key}"
-                                      IsReadOnly="True"
-                                      Width="150"/>
-                    <DataGridTextColumn Header="Value"
-                                      Binding="{Binding Value}"
-                                      Width="*"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </StackPanel>
+			<!-- Switch Settings Table -->
+			<StackPanel Grid.Row="3" Margin="0,0,0,20">
+				<TextBlock Text="In-Cab Selector Switch Settings" FontWeight="Bold" Margin="0,0,0,5"/>
+				<DataGrid ItemsSource="{Binding SwitchItems}"
+						  AutoGenerateColumns="False"
+						  IsReadOnly="False"
+						  GridLinesVisibility="All"
+						  BorderThickness="1"
+						  BorderBrush="Gray"
+						  Width="400"
+						  MaxHeight="400"
+						  ScrollViewer.VerticalScrollBarVisibility="Auto">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Key"
+										  Binding="{Binding Key}"
+										  IsReadOnly="True"
+										  Width="150"/>
+						<DataGridTextColumn Header="Value"
+										  Binding="{Binding Value}"
+										  Width="*"/>
+					</DataGrid.Columns>
+				</DataGrid>
+			</StackPanel>
 
-        <!-- Transfer Case Settings Table -->
-        <StackPanel Grid.Row="4" Margin="0,0,0,20">
-            <TextBlock Text="Transfer Case Settings" FontWeight="Bold" Margin="0,0,0,5"/>
-            <DataGrid ItemsSource="{Binding TCaseItems}"
-                      AutoGenerateColumns="False"
-                      IsReadOnly="False"
-                      GridLinesVisibility="All"
-                      BorderThickness="1"
-                      BorderBrush="Gray"
-                      Width="400"
-                      MaxHeight="400"
-                      ScrollViewer.VerticalScrollBarVisibility="Auto">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Key"
-                                      Binding="{Binding Key}"
-                                      IsReadOnly="True"
-                                      Width="150"/>
-                    <DataGridTextColumn Header="Value"
-                                      Binding="{Binding Value}"
-                                      Width="*"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </StackPanel>
+			<!-- Transfer Case Settings Table -->
+			<StackPanel Grid.Row="4" Margin="0,0,0,20">
+				<TextBlock Text="Transfer Case Settings" FontWeight="Bold" Margin="0,0,0,5"/>
+				<DataGrid ItemsSource="{Binding TCaseItems}"
+						  AutoGenerateColumns="False"
+						  IsReadOnly="False"
+						  GridLinesVisibility="All"
+						  BorderThickness="1"
+						  BorderBrush="Gray"
+						  Width="400"
+						  MaxHeight="400"
+						  ScrollViewer.VerticalScrollBarVisibility="Auto">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Key"
+										  Binding="{Binding Key}"
+										  IsReadOnly="True"
+										  Width="150"/>
+						<DataGridTextColumn Header="Value"
+										  Binding="{Binding Value}"
+										  Width="*"/>
+					</DataGrid.Columns>
+				</DataGrid>
+			</StackPanel>
 
-        <!-- Buttons -->
-        <StackPanel Grid.Row="5"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    Spacing="10">
-            <Button Content="Cancel"
-                    Command="{Binding CancelCommand}"
-                    Padding="20,10"/>
-            <Button Content="Apply"
-                    Command="{Binding ApplyCommand}"
-                    Padding="20,10"/>
-        </StackPanel>
-    </Grid>
+			<!-- Buttons -->
+			<StackPanel Grid.Row="5"
+						Orientation="Horizontal"
+						HorizontalAlignment="Right"
+						Spacing="10">
+				<Button Content="Cancel"
+						Command="{Binding CancelCommand}"
+						Padding="20,10"/>
+				<Button Content="Apply"
+						Command="{Binding ApplyCommand}"
+						Padding="20,10"/>
+			</StackPanel>
+		</Grid>
+	</ScrollViewer>
 </Window>
