@@ -1,0 +1,8 @@
+{
+  "version": "1.0.0",
+  "title": "Neoteric Desktop",
+  "icon": "Assets/space-monkey.ico",
+  "owners": [ "Chris Tacke" ],
+  "authors": [ "Chris Tacke" ],
+  "description": "A desktop app for configuring a Neoteric automotive hardware"
+}
