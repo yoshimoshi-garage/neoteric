@@ -6,9 +6,9 @@ namespace Neoteric;
 
 public class VoltageDividerPort : VoltageDivider
 {
-    public IAnalogInputPort Input { get; }
+    public IObservableAnalogInputPort Input { get; }
 
-    public VoltageDividerPort(IAnalogInputPort input, Resistance fixedResistor)
+    public VoltageDividerPort(IObservableAnalogInputPort input, Resistance fixedResistor)
         : base(input.ReferenceVoltage, fixedResistor)
     {
         Input = input;

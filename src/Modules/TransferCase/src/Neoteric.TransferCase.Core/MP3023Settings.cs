@@ -11,11 +11,11 @@ public class MP3023Settings : ITransferCaseVoltageSettings
 
     public MP3023Settings()
     {
-        Low4Min = 1.4;
-        Low4Max = 1.5;
-        High4Min = 3.4;
-        High4Max = 3.5;
-        High2Min = 2.4;
-        High2Max = 2.5;
+        Low4Min = 1.2;
+        Low4Max = 1.7;
+        High4Min = 3.2;
+        High4Max = 3.7;
+        High2Min = 2.2;
+        High2Max = 2.7;
     }
 }

@@ -9,6 +9,11 @@ public class ThreePositionFordTransferCaseSwitch : AnalogTransferCaseGearSelecto
     {
         return new TransferCaseSwitchSelectionBounds[]
         {
+            // measure at SEL_SW
+            //        v1b   v1c
+            // OPEN   1.59  2.68
+
+
             // measures resistances with TCC v1b
             // OPEN: 2.72V
             //       ----- 2.25

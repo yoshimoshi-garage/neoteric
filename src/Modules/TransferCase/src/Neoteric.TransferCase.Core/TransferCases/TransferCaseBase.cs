@@ -17,7 +17,7 @@ public abstract class TransferCaseBase : ITransferCase
     public event EventHandler<TransferCasePosition>? GearChanging;
     public event EventHandler<TransferCasePosition>? GearChanged;
 
-    private readonly GearSelectionMotor _motor;
+    private readonly IGearSelectionMotor _motor;
     private readonly ISafetyInterlock? _safetyInterlock;
     private readonly IDigitalOutputPort? _hubLockEnable;
     private int _destinationGearIndex = -1;
@@ -27,7 +27,7 @@ public abstract class TransferCaseBase : ITransferCase
 
     public bool IsShifting => _motor.IsMoving;
 
-    protected GearSelectionMotor SelectionMotor => _motor;
+    protected IGearSelectionMotor SelectionMotor => _motor;
     protected ISafetyInterlock? SafetyInterlock => _safetyInterlock;
 
     /// <summary>
@@ -38,7 +38,7 @@ public abstract class TransferCaseBase : ITransferCase
     protected virtual TransferCaseState GetDirectionTo(TransferCasePosition position) => TransferCaseState.Idle;
 
     protected TransferCaseBase(
-        GearSelectionMotor selectionMotor,
+        IGearSelectionMotor selectionMotor,
         ISafetyInterlock? safetyInterlock,
         IDigitalOutputPort? hubLockEnable
     )
@@ -73,6 +73,20 @@ public abstract class TransferCaseBase : ITransferCase
     public void StartControlLoop()
     {
         Task.Factory.StartNew(StateMachine, TaskCreationOptions.LongRunning);
+        //Task.Factory.StartNew(TestLoop, TaskCreationOptions.LongRunning);
+    }
+
+    private async Task TestLoop()
+    {
+        var enable = false;
+
+        while (true)
+        {
+            Resolver.Log.Info($"HUB: {enable.ToString()}");
+            _hubLockEnable.State = enable;
+            enable = !enable;
+            await Task.Delay(1000);
+        }
     }
 
     private int _lastCheckedIndex = -1;
@@ -105,7 +119,10 @@ public abstract class TransferCaseBase : ITransferCase
                         _lastKnownValidGearIndex = currentIndex;
                     }
 
-                    // Resolver.Log.Info($"Current Gear: {currentGear} ({currentIndex}): destination {_destinationGearIndex}");
+                    //if (currentIndex != _destinationGearIndex)
+                    //{
+                    Resolver.Log.Info($"Current Gear: {currentGear} ({currentIndex}): destination {_destinationGearIndex}");
+                    //}
 
                     if (currentIndex == _destinationGearIndex)
                     {

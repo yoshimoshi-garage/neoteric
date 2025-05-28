@@ -1,111 +1,8 @@
 using Meadow;
-using Meadow.Hardware;
+using Meadow.Foundation.Sensors;
 using Meadow.Logging;
-using Meadow.Peripherals.Sensors;
-using Meadow.Units;
 
 namespace Neoteric.TransferCase.Core.Tests;
-
-public class SimulatedAnalogInputPort : IAnalogInputPort, ISimulatedSensor
-{
-    public event EventHandler<IChangeResult<Voltage>>? Updated;
-
-    private readonly Voltage referenceVoltage;
-    private Voltage currentVoltage;
-
-    public Voltage Voltage => currentVoltage;
-    public Voltage ReferenceVoltage => referenceVoltage;
-    public int SampleCount => 1;
-
-    public SimulatedAnalogInputPort()
-        : this(Voltage.Zero, 3.3.Volts())
-    {
-    }
-
-    public SimulatedAnalogInputPort(Voltage initialVoltage)
-        : this(initialVoltage, 3.3.Volts())
-    {
-    }
-
-    public SimulatedAnalogInputPort(Voltage initialVoltage, Voltage referenceVoltage)
-    {
-        this.referenceVoltage = referenceVoltage;
-        this.referenceVoltage = referenceVoltage;
-        currentVoltage = initialVoltage;
-    }
-
-    public void Dispose()
-    {
-    }
-
-    public void SetVoltage(Voltage voltage)
-    {
-        var previous = currentVoltage;
-
-        if (voltage < Voltage.Zero)
-        {
-            voltage = Voltage.Zero;
-        }
-        else if (voltage > referenceVoltage)
-        {
-            voltage = referenceVoltage;
-        }
-
-        if (voltage == currentVoltage) { return; }
-
-        currentVoltage = voltage;
-        Updated?.Invoke(this, new ChangeResult<Voltage>(currentVoltage, previous));
-    }
-
-    public void SetSensorValue(object value)
-    {
-        if (value is Voltage v)
-        {
-            SetVoltage(v);
-        }
-        throw new ArgumentException("Value must be a voltage");
-    }
-
-    public Task<Voltage> Read()
-    {
-        return Task.FromResult(currentVoltage);
-    }
-
-    //------------------------------ TODO: implement below here
-    public Voltage[] VoltageSampleBuffer => throw new NotImplementedException();
-
-    public TimeSpan UpdateInterval => throw new NotImplementedException();
-
-    public TimeSpan SampleInterval => throw new NotImplementedException();
-
-    public IAnalogChannelInfo Channel => throw new NotImplementedException();
-
-    public IPin Pin => throw new NotImplementedException();
-
-    public SimulationBehavior[] SupportedBehaviors => throw new NotImplementedException();
-
-    public Type ValueType => throw new NotImplementedException();
-
-    public void StartUpdating(TimeSpan? updateInterval = null)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void StopUpdating()
-    {
-        throw new NotImplementedException();
-    }
-
-    public IDisposable Subscribe(IObserver<IChangeResult<Voltage>> observer)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void StartSimulation(SimulationBehavior behavior)
-    {
-        throw new NotImplementedException();
-    }
-}
 
 public class SelectorSwitchTests
 {
@@ -115,12 +12,35 @@ public class SelectorSwitchTests
     }
 
     [Fact]
+    public async Task MP3023InputVoltageDecodesToProperGear()
+    {
+        //var motor = new SimulatedGearSelectionMotor();
+        //var input = new SimulatedAnalogInputPort();
+        //var sw = new ThreePositionFordTransferCaseSwitch(input, new FordSwitchSettings());
+        //var settings = new TransferCaseSettings<FordSwitchSettings, MP3023Settings>();
+
+        //var tcase = new MP3023NQH(motor, input, null, null, settings);
+        //tcase.GearChanging += (s, e) => Debug.WriteLine("shifting...");
+
+        //input.SetSensorValue(new Meadow.Units.Voltage(1.4));
+
+        //tcase.RequestShiftTo(sw.RequestedPosition);
+        //tcase.StartControlLoop();
+
+        //while (true)
+        //{
+        //    Debug.WriteLine(tcase.CurrentGear);
+        //    await Task.Delay(1000);
+        //}
+    }
+
+    [Fact]
     public async Task ChangingVoltageSelectsProperGear()
     {
         Resolver.Log.LogLevel = LogLevel.Trace;
         var simulatedAnalog = new SimulatedAnalogInputPort();
 
-        var selector = new ThreePositionFordTransferCaseSwitch(simulatedAnalog);
+        var selector = new ThreePositionFordTransferCaseSwitch(simulatedAnalog, new FordSwitchSettings());
 
         TransferCasePosition? eventPosition = null;
 
@@ -134,7 +54,7 @@ public class SelectorSwitchTests
             eventPosition = null;
 
             // set the voltage
-            simulatedAnalog.SetVoltage(position.MidRangeVoltage);
+            simulatedAnalog.SetSensorValue(position.MidRangeVoltage);
 
             // wait for at least the check period
             await Task.Delay(selector.CheckPeriod * 2);

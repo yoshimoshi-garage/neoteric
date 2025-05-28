@@ -14,7 +14,7 @@ public class MP3023NQH : TransferCaseBase
     private readonly GearSensorConfig _gearSensorConfig;
 
     public MP3023NQH(
-        GearSelectionMotor motor,
+        IGearSelectionMotor motor,
         IAnalogInputPort positionSensorPort,
         ISafetyInterlock? safetyInterlock,
         IDigitalOutputPort? hubLockEnable,
@@ -127,6 +127,8 @@ public class MP3023NQH : TransferCaseBase
             if (_positionSensor == null) return TransferCasePosition.Unknown;
 
             var sensorReading = _positionSensor.Read().Result.Volts;
+
+            Resolver.Log.Info($"TCASE VOLTAGE: {sensorReading} volts");
 
             if (sensorReading < _gearSensorConfig.Min4Low)
             {

@@ -7,7 +7,7 @@ using static Meadow.Foundation.Motors.BidirectionalDcMotor;
 
 namespace Neoteric.TransferCase;
 
-public class GearSelectionMotor
+public class GearSelectionMotor : IGearSelectionMotor
 {
     public event EventHandler<MotorState>? StateChanged = default!;
 

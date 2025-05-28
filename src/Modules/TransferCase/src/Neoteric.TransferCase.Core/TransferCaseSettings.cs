@@ -15,11 +15,11 @@ public class TransferCaseSettings<TSwitchSetting, TTCaseSettings>
     public ISelectorSwitchVoltageSettings SwitchVoltageSettings { get; set; }
     public ITransferCaseVoltageSettings TransferCaseVoltageSettings { get; set; }
 
-    public TransferCaseSettings(Dictionary<string, string> settings)
+    public TransferCaseSettings(Dictionary<string, string> settings = null)
     {
         string v;
 
-        if (settings.TryGetValue("Interlock.Enabled", out v))
+        if (settings?.TryGetValue("Interlock.Enabled", out v) ?? false)
         {
             if (bool.TryParse(v, out bool b))
             {
@@ -28,7 +28,7 @@ public class TransferCaseSettings<TSwitchSetting, TTCaseSettings>
             }
         }
 
-        if (settings.TryGetValue("GearUnlock.Enabled", out v))
+        if (settings?.TryGetValue("GearUnlock.Enabled", out v) ?? false)
         {
             if (bool.TryParse(v, out bool b))
             {
@@ -37,7 +37,7 @@ public class TransferCaseSettings<TSwitchSetting, TTCaseSettings>
             }
         }
 
-        if (settings.TryGetValue("GearUnlock.Delay", out v))
+        if (settings?.TryGetValue("GearUnlock.Delay", out v) ?? false)
         {
             if (int.TryParse(v, out int b))
             {
@@ -47,10 +47,13 @@ public class TransferCaseSettings<TSwitchSetting, TTCaseSettings>
         }
 
         TransferCaseVoltageSettings = new TTCaseSettings();
-        TransferCaseVoltageSettings.ApplySettings(settings);
-
         SwitchVoltageSettings = new TSwitchSetting();
-        SwitchVoltageSettings.ApplySettings(settings);
+
+        if (settings != null)
+        {
+            TransferCaseVoltageSettings.ApplySettings(settings);
+            SwitchVoltageSettings.ApplySettings(settings);
+        }
     }
 
 }

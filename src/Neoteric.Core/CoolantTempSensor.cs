@@ -8,7 +8,7 @@ namespace Neoteric;
 public class CoolantTempSensor
 {
     private SensorCurve _curve;
-    private IAnalogInputPort _input;
+    private IObservableAnalogInputPort _input;
     private VoltageDividerPort _divider;
     private double _exponent = 0d;
     private double _factor = 0d;
