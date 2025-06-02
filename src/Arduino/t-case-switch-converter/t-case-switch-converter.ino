@@ -1,23 +1,36 @@
 /*
- * Seat Cooling Control System
+ * Neoteric Transfer Case Switch Converter
+ *
+ * MIT LICENSE
  * 
- * This sketch controls 4 PWM fans based on 4 input switches.
- * Each fan is associated with a specific switch and will only run when its switch is ON.
- * The speed of all active fans is controlled by a single potentiometer.
+ * © 2025 Chris Tacke
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
+ * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  * 
- * Hardware connections:
- * - Potentiometer connected to analog pin A0
- * - 4 switches connected to digital pins 2, 3, 4, 5
- * - 4 PWM fans connected to PWM pins 6, 9, 10, 11
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+ * IN THE SOFTWARE.
  */
 
  #include <Arduino.h>
 
 // Uncomment this line to enable debug output
-#define DEBUG
+//#define DEBUG
 
+#ifdef DEBUG
+  // slower in debug to not overload the console output
+  const int LOOP_WAIT = 1000;
+#else
+  // faster is release for responsiveness
+  const int LOOP_WAIT = 100;
+#endif
+
+// const 
 // Pin definitions
-const int INPUT_PIN = A0;   
+const int INPUT_PIN = A1;   
 const int OUTPUT_PIN = 3;
 
 const float ACTUAL_VCC = 5.0;
@@ -100,6 +113,7 @@ void processVoltageIO() {
   analogWrite(OUTPUT_PIN, pwmValue);
   
   // Debug output
+#if DEBUG
   float inputVoltage = (adcReading / 1023.0) * 5.0;
   Serial.print("Gear: ");
   Serial.print(mapping->gearName);
@@ -110,26 +124,32 @@ void processVoltageIO() {
   Serial.print("V (PWM: ");
   Serial.print(pwmValue);
   Serial.println(")");
+#else
+// Debug output only when switch position changes
+  static const char* previousGear = "";  // Remember previous gear
+  
+  if (strcmp(mapping->gearName, previousGear) != 0) {
+    Serial.print("Switch changed to: ");
+    Serial.print(mapping->gearName);
+    Serial.print(" -> Output: ");
+    Serial.print(mapping->outputVoltage);
+    Serial.println("V");
+    
+    previousGear = mapping->gearName;  // Update for next comparison
+  }
+#endif
 }
 
 void setup() {
-  #ifdef DEBUG
-    Serial.begin(9600);
-    DEBUG_PRINTLN("Switch Converter Initialized");
-  #endif
+  Serial.begin(9600);
+  DEBUG_PRINTLN("Switch Converter Initialized");
 
   pinMode(OUTPUT_PIN, OUTPUT);  // Set output for PWM
 }
 
 void loop() {
-  // inputValue = analogRead(INPUT_PIN);
-  // int switchSelection = detectVoltageLevel(inputValue);
-
-  // DEBUG_PRINT("switch: ");
-  // DEBUG_PRINTLN(switchSelection);
-
   processVoltageIO();
 
   // Short delay for stability
-  delay(1000);
-  }
+  delay(LOOP_WAIT);
+}

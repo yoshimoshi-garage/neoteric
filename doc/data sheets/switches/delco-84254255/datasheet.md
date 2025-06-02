@@ -40,4 +40,4 @@ Testing with a meter, 11<->12 appears to just be a mechanical resistor switch.  
 So to illiminate the 2H indicator, you would need to:
   - 12V to pin 4
   - pin 8 to ground
-  - knob in 2H
+  - knob in 2H 
