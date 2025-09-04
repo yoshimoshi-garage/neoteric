@@ -18,7 +18,7 @@
  #include <Arduino.h>
 
 // Uncomment this line to enable debug output
-//#define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
   // slower in debug to not overload the console output
@@ -36,7 +36,7 @@ const int OUTPUT_PIN = 3;
 const float ACTUAL_VCC = 5.0;
 // due to impedance, etc of RC filter, we need to accound for a voltage drop
 // Calibration = Target_Voltage / Measured_Voltage
-const float PWM_CALIBRATION_FACTOR = 1.08;// 1.067;
+const float PWM_CALIBRATION_FACTOR = 1.0;// 1.067;
 
 // Voltage mapping structure
 struct VoltageMap {
@@ -113,7 +113,7 @@ void processVoltageIO() {
   analogWrite(OUTPUT_PIN, pwmValue);
   
   // Debug output
-#if DEBUG
+#ifdef DEBUG
   float inputVoltage = (adcReading / 1023.0) * 5.0;
   Serial.print("Gear: ");
   Serial.print(mapping->gearName);

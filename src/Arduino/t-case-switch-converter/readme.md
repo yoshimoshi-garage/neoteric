@@ -38,14 +38,16 @@ The Arduino application then uses a lookup table to determine an output voltage 
 | 2H | 2V |
 | 4H | 3V | 
 
-Arduinos don't have a DAC, so we use a PWM and an RC filter to create a desired output voltage.  The RC filter has a voltage drop, so the theoretical PWM voltage does not directly map to the output voltage.  The code has a "calibration" value to scale for that.
+Arduinos don't have a DAC, so we use a PWM and an RLC filter to create a desired output voltage.  This design uses a 100-ohm resistor, a 100mH inductor, and a 47uF capacitor.  This should give a resonant frequency around 70Hz and a 20dB attenuation.
+
+The RLC filter has a voltage drop, so the theoretical PWM voltage does not directly map to the output voltage.  The code has a "calibration" value to scale for that.
 
 ```
-D3 >----[10k]----+-----< Filtered Output
-                 |
-               [10uF]
-                 |
-              (Ground)
+D3 >----[1kohm]----[100mH]---+----< Filtered Output
+                      |
+                    [47uF]
+                      |
+                   (Ground)
 ```
 
 ## Wiring
