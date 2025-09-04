@@ -18,6 +18,7 @@
 #include "config.h"
 #include "output_control.h"
 #include "state_machine.h"
+#include "current_monitor.h"
 
 // Global variable definitions
 ControllerState currentState;
@@ -41,11 +42,15 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
 
+  // Initialize current monitoring
+  initializeCurrentMonitoring();
+
   // Initialize state machine
   initializeStateMachine();
 }
 
 void loop() {
   updateStateMachine();
+  monitorAllCurrents();
   delay(10);
 }
