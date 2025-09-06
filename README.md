@@ -24,7 +24,7 @@ For lack of a better name, each project that creates hardware to solve a specifi
 | --- | --- |
 | [6-channel solid-state switch.](modules\Arduino\glow-plug-controller\readme.md) | 6 channels, up to 20A each.  PWM controllable with current sensing.  Used as a glow plug controller, but could be used for a wide array of things |
 | [Transfer case switch converter](modules\Arduino\t-case-switch-converter\readme.md) | Use a Dorman 601-604 (i.e. GM) switch to control a Ford transfer case | 
-| [Transfer case controller](modules\Meadow\TransferCase\readme.md) | 
+| [Transfer case controller](modules\Meadow\TransferCase\readme.md) | Control a BW4419 or a MP3023NQH in your custom build |
 
 
 ## Sensors
