@@ -19,12 +19,20 @@
 #include "output_control.h"
 #include "state_machine.h"
 #include "current_monitor.h"
+#include "fault_indication.h"
 
 // Global variable definitions
 ControllerState currentState;
 unsigned long stateStartTime;
 bool outputEnabled[NUM_OUTPUTS];
 float currentDutyCycle[NUM_OUTPUTS];
+OutputState outputStates[NUM_OUTPUTS];
+unsigned long outputStartTimes[NUM_OUTPUTS];
+unsigned long outputStaggerStartTime[NUM_OUTPUTS];
+int outputTotalDuration[NUM_OUTPUTS];
+float initialTemperatures[NUM_OUTPUTS];
+bool outputFaulted[NUM_OUTPUTS];
+int firstFaultedOutput;
 
 void setup() {
   Serial.begin(9600);
@@ -33,7 +41,7 @@ void setup() {
   // Initialize outputs
   initializeOutputs();
 
-  // Initialize inputs for future features
+  // Initialize inputs
   for(int i = 0 ; i < NUM_INPUTS ; i++) {
     pinMode(INPUT_PINS[i], INPUT);
   }
@@ -45,6 +53,9 @@ void setup() {
   // Initialize current monitoring
   initializeCurrentMonitoring();
 
+  // Initialize fault indication
+  initializeFaultIndication();
+
   // Initialize state machine
   initializeStateMachine();
 }
@@ -52,5 +63,6 @@ void setup() {
 void loop() {
   updateStateMachine();
   monitorAllCurrents();
+  updateFaultIndication();
   delay(10);
 }

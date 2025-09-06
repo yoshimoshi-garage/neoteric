@@ -8,7 +8,14 @@ void initializeOutputs() {
     analogWrite(OUTPUT_PINS[i], 0);
     outputEnabled[i] = true;
     currentDutyCycle[i] = 0.0;
+    outputStates[i] = OUTPUT_OFF;
+    outputStartTimes[i] = 0;
+    outputStaggerStartTime[i] = 0;
+    outputTotalDuration[i] = COLD_ENGINE_TOTAL_MS; // Default to cold
+    initialTemperatures[i] = 0; // first read will estimate this
+    outputFaulted[i] = false;
   }
+  firstFaultedOutput = -1; // No faults initially
   DEBUG_PRINTLN("All outputs initialized to OFF and enabled");
 }
 

@@ -7,6 +7,7 @@
 void initializeStateMachine();
 void updateStateMachine();
 void enterLowPowerMode();
-float calculateRampDutyCycle(unsigned long elapsedMs, unsigned long rampDurationMs);
+void updateIndividualOutputs();
+void startFullPowerPhase();
 
 #endif
