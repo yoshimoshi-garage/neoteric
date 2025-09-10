@@ -31,8 +31,21 @@ const float BTS50010_SENSE_RATIO = 10000.0; // 10000:1 current sense ratio (typi
 // Current limits (in Amperes)
 const float MIN_CURRENT_THRESHOLD = 1.0;    // Minimum expected current
 const float MAX_CURRENT_THRESHOLD = 20.0;   // Maximum safe current
+const bool DISABLE_CURRENT_LIMITS = false;  // Set to true to disable current limit checking
 
 // Temperature estimation constants (simplified model)
+// These values are used to estimate glow plug temperature from current:
+// Temperature = AMBIENT_TEMP + (R_measured - GLOW_PLUG_RESISTANCE_COLD) / (GLOW_PLUG_RESISTANCE_COLD * TEMP_COEFFICIENT)
+// where R_measured = voltage / current
+// 
+// Numeric example with default values:
+// If voltage=13.8V, current=10A: R_measured = 13.8/10 = 1.38Ω
+// Temperature = 25 + (1.38 - 0.8) / (0.8 * 0.006) = 25 + 0.58/0.0048 = 25 + 121 = 146°C
+//
+// Adjust these values based on your specific glow plug specifications:
+// Example 1: Bosch Duraterm glow plugs typically have ~0.6Ω cold resistance, TC ~0.0055/°C
+// Example 2: NGK ceramic glow plugs typically have ~1.2Ω cold resistance, TC ~0.004/°C
+// Example 3: ACDelco 6.6 Duramax ceramic glow plugs typically have ~0.4Ω cold resistance, TC ~0.0008/°C
 const float GLOW_PLUG_RESISTANCE_COLD = 0.8;  // Cold resistance in ohms
 const float TEMP_COEFFICIENT = 0.006;         // Temperature coefficient per °C
 const float AMBIENT_TEMP = 25.0;              // Ambient temperature in °C

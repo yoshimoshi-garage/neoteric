@@ -214,12 +214,28 @@ void setOutputTimingBasedOnTemperature(int outputIndex, float temperature) {
     outputTotalDuration[outputIndex] = HOT_ENGINE_TOTAL_MS;
     DEBUG_PRINT("Output ");
     DEBUG_PRINT(outputIndex);
-    DEBUG_PRINTLN(" classified as HOT engine - 8 second total (5s@100% + 3s@60%)");
+    DEBUG_PRINT(" classified as HOT engine - ");
+    DEBUG_PRINT(HOT_ENGINE_TOTAL_MS / 1000);
+    DEBUG_PRINT(" second total (");
+    DEBUG_PRINT(FULL_POWER_DURATION_MS / 1000);
+    DEBUG_PRINT("s@100% + ");
+    DEBUG_PRINT((HOT_ENGINE_TOTAL_MS - FULL_POWER_DURATION_MS) / 1000);
+    DEBUG_PRINT("s@");
+    DEBUG_PRINT(REDUCED_DUTY_CYCLE * 100);
+    DEBUG_PRINTLN("%)");
   } else {
     outputTotalDuration[outputIndex] = COLD_ENGINE_TOTAL_MS;
     DEBUG_PRINT("Output ");
     DEBUG_PRINT(outputIndex);
-    DEBUG_PRINTLN(" classified as COLD engine - 15 second total (5s@100% + 10s@60%)");
+    DEBUG_PRINT(" classified as COLD engine - ");
+    DEBUG_PRINT(COLD_ENGINE_TOTAL_MS / 1000);
+    DEBUG_PRINT(" second total (");
+    DEBUG_PRINT(FULL_POWER_DURATION_MS / 1000);
+    DEBUG_PRINT("s@100% + ");
+    DEBUG_PRINT((COLD_ENGINE_TOTAL_MS - FULL_POWER_DURATION_MS) / 1000);
+    DEBUG_PRINT("s@");
+    DEBUG_PRINT(REDUCED_DUTY_CYCLE * 100);
+    DEBUG_PRINTLN("%)");
   }
 }
 
@@ -228,7 +244,9 @@ void monitorAllCurrents() {
   if (currentState == STATE_FULL_POWER) {
     for (int i = 0; i < NUM_OUTPUTS; i++) {
       CurrentReading reading = readGlowPlugCurrent(i);
-      checkCurrentLimitsAndDisable(i, reading);
+      if (!DISABLE_CURRENT_LIMITS) {
+        checkCurrentLimitsAndDisable(i, reading);
+      }
     }
   }
 }
